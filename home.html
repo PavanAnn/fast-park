@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <title>Página de Login</title>
+        <meta charset="UTF-8">
+        <link rel='stylesheet' href="home.css">
+    </head>
+    
+    <body>
+
+        <form class="login " action="">
+            <div>
+                <label for="">Usuario</label>
+                <input type="text" id="username" class="submit_text"/>
+            </div>
+            <br>
+            <div>
+                <label for="" class="passwd">Senha</label>
+                <input type="password" id="password" class="submit_text" />
+            </div>
+            <br>
+            <input type="button" class="button1" onclick={validate()} value="Login"/>
+        </form>
+
+
+    </body>
+
+    <script>
+        function validate(){
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            if(username == "operador" && password == "1234"){
+                location.href = "panel.html"
+            }
+            else
+                alert("Credenciais inválidas")
+        }
+    </script>
+</html>
+
+
+

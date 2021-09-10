@@ -1,0 +1,45 @@
+body{
+    background-image: url("/images/background-clean.png");
+    height: 100%;
+    background-size:  cover;
+}
+
+table{
+    position: relative;
+    margin-left: 40%;
+    background-color: rgba(252, 243, 243, 0.2);
+    width: 50%;
+    height: 80%;
+    border-radius: 5%;
+    margin-top: 2%;
+}
+
+thead{
+    background-color: black;
+    color: aliceblue;
+}
+
+th{
+    padding-top: 1%;
+}
+
+.control{
+    float: left;
+    width: 20%;
+    background-color: rgba(231, 227, 218, 0.904);
+    border-radius: 5%;
+    margin-top: 2%;
+}
+
+.control h1, h3, button, div, input{
+    padding-left: 1%;
+    margin-top: 2%;
+    margin-bottom: 3%;
+}
+
+.control .panel{
+    background-color: rgba(105, 99, 99, 0.336);
+    width: 30%;
+    margin-top: 2%;
+    margin-bottom: 3%;
+}

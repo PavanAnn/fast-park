@@ -1,0 +1,58 @@
+body{
+    background-image: url("/images/background-clean.png");
+    height: 100%;
+    background-size:  cover;
+}
+
+
+.login{
+    background-color: rgb(255, 255, 255);
+    margin: auto;
+    margin-top: 4%;
+    width: 15%;
+    height: 40%;
+    border-radius: 5%;
+
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 28px;
+    color: #000000;
+
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 55;
+    align-items: center;
+    text-align: left;
+}
+
+
+
+
+.submit_text{
+    padding: 10px;
+    width: 280px;
+    margin: 10px 0;
+    box-sizing: border-box;
+    border: 1% solid rgb(226, 226, 226);  
+    text-align: left;
+    font-size: 18px;
+    
+    float: left;
+}
+
+.button1 {
+    background-color: rgb(54, 141, 212);
+    color: white;
+    height: 40px;
+    margin: 30px 0;
+    border: none;
+    cursor: pointer;
+    width: 35%;
+    font-weight: bold;
+    float: right;
+}
+
+button:hover {
+    opacity: 0.1;
+}

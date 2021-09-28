@@ -1,0 +1,11 @@
+body {
+    background-image: url("../images/hexa.png");   /*Background teste enquanto não acham a outra :p */
+    height: 100%;
+    background-size:  cover;
+}
+
+.header_logo {
+    padding-top: 50px;
+    text-align: center;
+    color: #fefeff;
+  }

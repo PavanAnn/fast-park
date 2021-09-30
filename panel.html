@@ -4,60 +4,83 @@
     <title>Painel</title>
     <link rel='stylesheet' href="panel.css">
 </head>
-<body>
+<body class="row">
     
     <script>
         function entrance(){
-            alert("Entrando...")
+            var entrance_license = document.getElementById("entrance_license").value;
+            if (entrance_license == "")
+                alert("Por favor, digite um valor válido para a placa do veículo.")
+            else
+                alert("Veículo com placa '" + entrance_license + "' entrando...")
         }
 
         function exit(){
-            alert("Saindo...")
+            var exit_license = document.getElementById("exit_license").value;
+            if (exit_license == "")
+                alert("Por favor, digite um valor válido para a placa do veículo.")
+            else
+                alert("Veículo com placa '" + exit_license + "' saindo...")
         }
 
         function erase_data(){
             alert("Apagando os dados...")
         }
+
+        function load_table()
+        {
+            alert("Load table called!")
+        }
     </script>
 
-    <div class="control">
-        <h1>Placa do veículo</h1>
-        <input />
+
+    <aside class="control column">
 
         <div>
+            <h2>Placa do veículo</h2>
+            <input id="entrance_license"/>
+
             <h3>Gerada automaticamente?</h3> 
             <input class="checkboxes" type="radio">Sim
             <input class="checkboxes" type="radio" checked>Não
         </div>
-        
-        <h3>Possui sem parar?</h3>
-        <input class="checkboxes" type="radio">Sim
-        <input class="checkboxes" type="radio" checked>Não
+
+        <div>
+            <h3>Possui sem parar?</h3>
+            <input class="checkboxes" type="radio">Sim
+            <input class="checkboxes" type="radio" checked>Não
+        </div>
 
         <div>
             <input class="checkboxes" type="radio" checked>Carro
             <input class="checkboxes" type="radio">Moto
         </div>
 
-        <button id="btn_entrance" onclick="entrance()">Entrada de veículo</button>
 
         <div class="panel">
-            Tela do leo
+            <button id="btn_entrance" onclick="entrance()">Entrada de veículo</button>
+            <h4>Tela do Leo</h4>
         </div>
 
-        <h1>Placa do veículo</h1>
-        <input />
-        <div class="teste">
-        <button id="btn_exit" onclick="exit()">Saída de veículo</button>
+        <div>
+            <h2>Placa do veículo</h2>
+            <input id="exit_license"/>
+
         </div>
+
         <div class="panel">
-            Tela do leo
+            
+            <button id="btn_exit" onclick="exit()">Saída de veículo</button>
+
+            <h4>Tela do Leo</h1>
+
+            <button id="btn_erase_data" onclick="erase_data()">Apagar todos os dados</button>
         </div>
 
-        <button id="btn_erase_data" onclick="erase_data()">Apagar todos os dados</button>
-    </div>
+    </aside>
 
-    <table class="tabela">
+
+    <table class="column" onloadstart="load_table()">
         <thead>
             <th>#</th>
             <th>Placa</th>
@@ -68,30 +91,30 @@
         </thead>
 
         <tr>
-            <th>0001</th>
-            <th>bla</th>
-            <th>bla</th>
-            <th>bla</th>
-            <th>bla</th>
-            <th>bla</th>
+            <td>0001</td>
+            <td>bla</td>
+            <td>bla</td>
+            <td>bla</td>
+            <td>bla</td>
+            <td>bla</td>
         </tr>
 
         <tr>
-            <th>0002</th>
-            <th>bla</th>
-            <th>bla</th>
-            <th>bla</th>
-            <th>bla</th>
-            <th>bla</th>
+            <td>0002</td>
+            <td>bla</td>
+            <td>bla</td>
+            <td>bla</td>
+            <td>bla</td>
+            <td>bla</td>
         </tr>
 
         <tr>
-            <th>0003</th>
-            <th>bla</th>
-            <th>bla</th>
-            <th>bla</th>
-            <th>bla</th>
-            <th>bla</th>
+            <td>0003</td>
+            <td>bla</td>
+            <td>bla</td>
+            <td>bla</td>
+            <td>bla</td>
+            <td>bla</td>
         </tr>
     </table>
 </body>

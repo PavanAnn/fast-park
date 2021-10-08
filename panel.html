@@ -4,60 +4,208 @@
     <title>Painel</title>
     <link rel='stylesheet' href="panel.css">
 </head>
-<body>
+<body class="row" onload="populate_table()">
     
     <script>
+        function  generate_new_random_license()
+        {
+            //alert("Gerando nova placa ...");
+            //console.log("Gerando nova placa...");
+
+            var re = "[A-Z][A-Z][A-Z][0-9][A-Z0-9][0-9][0-9]";
+            var capital_letters_array = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+            var myArray = [];
+            var cont = 0;
+            //while(cont < 20){
+                var placa = "";
+                
+                for (i = 0; i < 3; i++){
+                    var valor_gerado = Math.floor(Math.random() * 26)
+                    placa += capital_letters_array[valor_gerado];
+                }
+
+                for (i = 0; i < 4; i++) {
+                    var valor_gerado = Math.floor(Math.random() * 9)
+                    placa += valor_gerado.toString();
+                }
+                
+                myArray.push(placa)
+                cont++;
+            //}
+            
+            //var myArray = ['AAA8A88', 'A909090', 'aaa8a88', 'aAA8A88', '12AAAAA', 'AAA9A99AA', 'AAA8888'];
+            /*var validated = []
+            myArray.forEach(function(item){
+                var value = item.toString().match(re);
+
+                if(value != null)
+                    validated.push(value);
+            })*/
+
+            console.log("Nova placa gerada com sucesso   " + myArray[0]);
+            return myArray[0];
+        }
+
+        var ja_chamou = false;
+
+        function populate_table()
+        {
+            if (!ja_chamou)
+            {
+                alert("Load table called!")
+                
+                var table = document.getElementById("my_table");
+                var numberRows = table.rows.length - 1; //-1 porque a primeira linha da tabela são os nomes das colunas
+
+                for (i = 0; i < 5; i++) {
+
+                    var row = table.insertRow(numberRows + 1);
+
+                    var new_row = ["000" + (numberRows + 1), generate_new_random_license(), "Carro", (new Date()).toString().split(' GMT')[0], "pagamento bla", "Não"];
+                    var count = 0;  //inicializar com number of rows?
+
+                    new_row.forEach(element => {
+                        var cell = row.insertCell(count);
+                        cell.innerHTML = element;
+                        count++;
+                    });
+                    
+                }
+            }
+
+        }
+
         function entrance(){
-            alert("Entrando...")
+            var entrance_license;
+            var generate_random_license = document.getElementsByName("random-license-input");
+
+            if (generate_random_license[0].checked) { if (generate_random_license[0].value=="Sim" ) entrance_license = generate_new_random_license(); else return;}
+            else if (generate_random_license[1].checked) { 
+                if (generate_random_license[1].value != "Não") return;
+                
+                if (document.getElementById("entrance_license").value == "") { alert("Por favor, digite um valor válido para a placa do veículo ou selecione a opção 'Sim'."); return; }
+                else { entrance_license = document.getElementById("entrance_license").value;  }
+            }
+            else { alert("Por favor, digite um valor válido para a placa do veículo ou selecione a opção 'Sim'."); return; }
+            
+            var sem_parar = 0;
+            var inputs_sem_parar = document.getElementsByName("sem-parar-input");
+            if (inputs_sem_parar[0].checked ) { sem_parar = inputs_sem_parar[0].value; }
+            else if (inputs_sem_parar[1].checked ) { sem_parar = inputs_sem_parar[1].value; }
+            else { alert ("Selecione uma opção de sem-parar"); return}
+
+            var tipo = 0;
+            var inputs_type = document.getElementsByName("type-input");
+            if (inputs_type[0].checked ) { tipo = inputs_type[0].value; }
+            else if (inputs_type[1].checked ) { tipo = inputs_type[1].value; }
+            else { alert ("Selecione um tipo de veículo"); return}
+
+            alert("Sem parar " + sem_parar + " | Tipo " +  tipo);
+
+            alert("Veículo com placa '" + entrance_license + "' entrando...");
+
+            var table = document.getElementById("my_table");
+            var numberRows = table.rows.length - 1; //-1 porque a primeira linha da tabela são os nomes das colunas
+            alert("número de linhas é " + numberRows);
+
+            var row = table.insertRow(numberRows + 1);
+
+            var new_row = ["000" + (numberRows + 1), entrance_license, tipo, (new Date()).toString().split(' GMT')[0], "pagamento bla", sem_parar];
+            var count = 0;  //inicializar com number of rows?
+
+            new_row.forEach(element => {
+                var cell = row.insertCell(count);
+                cell.innerHTML = element;
+                count++;
+            });
+                
         }
 
         function exit(){
-            alert("Saindo...")
+            var exit_license = document.getElementById("exit_license").value;
+            if (exit_license == "")
+                alert("Por favor, digite um valor válido para a placa do veículo.")
+            else{
+                alert("Veículo com placa '" + exit_license + "' saindo...")
+                document.getElementById("my_table").deleteRow(1);
+            }
         }
 
         function erase_data(){
             alert("Apagando os dados...")
         }
+
+        /*
+        function watch( targetElement, triggerFunction ){
+            /// store the original html to compare with later
+            var html = targetElement.innerHTML;
+            /// start our constant checking function
+            setInterval(function(){
+                /// compare the previous html with the current
+                if ( html != targetElement.innerHTML ) {
+                /// trigger our function when a change occurs
+                triggerFunction();
+                /// update html so that this doesn't keep triggering
+                html = targetElement.innerHTML;
+                }
+            },500);
+        }
+
+        function whenChangeHappens(){
+        alert('this will trigger when the html changes in my_target');
+        }
+
+        watch( document.getElementById('mytable'), whenChangeHappens );*/
     </script>
 
-    <div class="control">
-        <h1>Placa do veículo</h1>
-        <input />
+
+    <aside class="control column">
 
         <div>
+            <h2>Placa do veículo</h2>
+            <input id="entrance_license"/>
+
             <h3>Gerada automaticamente?</h3> 
-            <input class="checkboxes" type="radio">Sim
-            <input class="checkboxes" type="radio" checked>Não
+            <input class="checkboxes" type="radio" name="random-license-input" value="Sim">Sim
+            <input class="checkboxes" type="radio" name="random-license-input" value="Não">Não
         </div>
-        
-        <h3>Possui sem parar?</h3>
-        <input class="checkboxes" type="radio">Sim
-        <input class="checkboxes" type="radio" checked>Não
 
         <div>
-            <input class="checkboxes" type="radio" checked>Carro
-            <input class="checkboxes" type="radio">Moto
+            <h3>Possui sem parar?</h3>
+            <input class="checkboxes" type="radio" name="sem-parar-input" value="Sim">Sim
+            <input class="checkboxes" type="radio" name="sem-parar-input" value="Não">Não
         </div>
 
-        <button id="btn_entrance" onclick="entrance()">Entrada de veículo</button>
+        <div>
+            <input class="checkboxes" type="radio" name="type-input" value="Carro">Carro
+            <input class="checkboxes" type="radio" name="type-input" value="Moto">Moto
+        </div>
+
 
         <div class="panel">
-            Tela do leo
+            <button id="btn_entrance" onclick="entrance()">Entrada de veículo</button>
+            <h4>Tela do Leo</h4>
         </div>
 
-        <h1>Placa do veículo</h1>
-        <input />
-        <div class="teste">
-        <button id="btn_exit" onclick="exit()">Saída de veículo</button>
+        <div>
+            <h2>Placa do veículo</h2>
+            <input id="exit_license"/>
+
         </div>
+
         <div class="panel">
-            Tela do leo
+            
+            <button id="btn_exit" onclick="exit()">Saída de veículo</button>
+
+            <h4>Tela do Leo</h1>
+
+            <button id="btn_erase_data" onclick="erase_data()">Apagar todos os dados</button>
         </div>
 
-        <button id="btn_erase_data" onclick="erase_data()">Apagar todos os dados</button>
-    </div>
+    </aside>
 
-    <table class="tabela">
+
+    <table id="my_table" class="column">
         <thead>
             <th>#</th>
             <th>Placa</th>
@@ -68,30 +216,30 @@
         </thead>
 
         <tr>
-            <th>0001</th>
-            <th>bla</th>
-            <th>bla</th>
-            <th>bla</th>
-            <th>bla</th>
-            <th>bla</th>
+            <td>0001</td>
+            <td>bla</td>
+            <td>bla</td>
+            <td>bla</td>
+            <td>bla</td>
+            <td>bla</td>
         </tr>
 
         <tr>
-            <th>0002</th>
-            <th>bla</th>
-            <th>bla</th>
-            <th>bla</th>
-            <th>bla</th>
-            <th>bla</th>
+            <td>0002</td>
+            <td>bla</td>
+            <td>bla</td>
+            <td>bla</td>
+            <td>bla</td>
+            <td>bla</td>
         </tr>
 
         <tr>
-            <th>0003</th>
-            <th>bla</th>
-            <th>bla</th>
-            <th>bla</th>
-            <th>bla</th>
-            <th>bla</th>
+            <td>0003</td>
+            <td>bla</td>
+            <td>bla</td>
+            <td>bla</td>
+            <td>bla</td>
+            <td>bla</td>
         </tr>
     </table>
 </body>

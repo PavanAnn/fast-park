@@ -1,0 +1,19 @@
+body {
+    background-image: url("../images/hexa.png");
+    height: 100%;
+    background-size:  cover;
+}
+
+.header_logo {
+    padding-top: 50px;
+    text-align: center;
+    color: #fefeff;
+  }
+  #imgpos {
+    position: absolute;
+    margin: auto;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+}

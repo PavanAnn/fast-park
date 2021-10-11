@@ -1,10 +1,56 @@
 body{
     background-image: url("/images/hexa.png");
-    height: 100%;
-    background-size: 100% 102%;
+    /* height: 100%; */
+    background-size: 100% 100%;
 }
 
-div{
+.header_logo {
+    padding-top: 50px;
+    font-size: 20px;
     text-align: center;
-    font-size: 80px;
+    color: #fefeff;
+    letter-spacing: 1.5px;
+    margin-bottom: 2%;
+}
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+#img_input{
+    margin-left: 27%;
+    background: url("../images/placa-veiculo-mercosul-particular-blank.png");
+    width: 857px;
+    height: 285px;
+}
+
+#placa{
+    width: 88%;
+    margin-top: 10%;
+    margin-left: 10%;
+    height: 63%;
+    border: none;
+    text-transform: uppercase;
+    text-align: center;
+    font-size:100pt;
+}
+
+.button {
+    position:absolute;
+    bottom: 18%;
+    margin-left: 39%;
+}
+
+#btn_payment{
+    color: white;
+    background-color: red;
+    border-radius: 10px;
+    height: 13%;
+    width: 21%;
+    font-size: 25px;
+    font-style: italic;
+    font-weight: bold;
+    text-align: center;
 }

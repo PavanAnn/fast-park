@@ -5,8 +5,15 @@
         <link rel='stylesheet' href="inserir_placa.css">
     </head>
     <body>
-        <div>
-            <img src="../images/placa-veiculo-mercosul-particular-blank.png">
+        <header class="header_logo">
+            <h1>Shopping X</h2>
+            <h2>Pagamento de Estacionamento</h2>
+            <h2>Insira sua placa</h2>
+        </header>
+        <div id="img_input">
+            <input id="placa" class="submit_text" maxlength="8"/>
         </div>
+        <button class="button" id="btn_payment" onclick="window.location.href='/pagamento/metodo_pagamento.html'">Clique aqui para pagar</button>
+
     </body>
 </html>

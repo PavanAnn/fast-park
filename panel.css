@@ -20,8 +20,7 @@ thead{
     float: left;
     width: 20%;
     background-color: rgba(231, 227, 218, 0.904);
-    border-radius: 5%;
-    
+    border-radius: 20px;    
     padding-bottom: 1%;
     padding-inline-start: 1%;
     padding-inline-end: 1%;
@@ -75,11 +74,31 @@ thead{
 .right {
    width: 60%;
 }
-  
+
+.shadow {
+    box-shadow: 5px 5px 5px #aaaaaa;
+    margin-bottom: 50px;
+}
+
+.round_font {
+    border-radius: 10px;
+    font-size: 20px;
+}
+
+.placa_veiculo_title{
+    margin-bottom: -3px;
+}
+
+.teste {
+    float: right;
+}
+aside > div {
+    margin-bottom: 20px;
+}
   /* Clear floats after the columns */
   /*.row:after {
     content: "";
     display: table;
     clear: both;
   }*/
-  
+ 

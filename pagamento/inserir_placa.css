@@ -1,10 +1,130 @@
-body{
-    background-image: url("/images/hexa.png");
-    height: 100%;
-    background-size: 100% 102%;
+@font-face {
+    font-family: 'mandatory';
+    src: url('../Fonts/mandator-webfont.woff') format('woff2'),
+         url('../Fonts/mandator-webfont.woff2') format('woff');
+    font-weight: normal;
+    font-style: normal;
 }
 
-div{
+@font-face {
+    font-family: 'fe-font';
+    src: url('../Fonts/fe-font-webfont.woff2') format('woff2'),
+         url('../Fonts/fe-font-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+body{
+    background-image: url("/images/hexa.png");
+    /* height: 100%; */
+    background-size: 100% 100%;
+}
+
+.header_logo {
+    padding-top: 50px;
+    
     text-align: center;
-    font-size: 80px;
+    color: #fefeff;
+    letter-spacing: 1.5px;
+    margin-bottom: 2%;
+
+    font-family: 'Kanit', sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 28px;
+    color: #ffffff;
+}
+
+.header_title {
+    text-shadow: 1px 2px 2px black;
+    font-size: 50px;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+#img_input{
+    margin-left: 27%;
+    background: url("../images/placa-veiculo-mercosul-particular-blank.png");
+    width: 857px;
+    height: 285px;
+}
+
+
+
+#placa{
+    width: 86%;
+    margin-top: 11%;
+    margin-left: 11%;
+    height: 55%;
+    border: none;
+    text-transform: uppercase;
+    font-size:112pt;
+    font-family: 'fe-font';
+    outline: none;
+}
+
+/*
+Antigo
+#placa{
+    width: 88%;
+    margin-top: 10%;
+    margin-left: 10%;
+    height: 63%;
+    border: none;
+    text-transform: uppercase;
+    text-align: center;
+    font-size:120pt;
+    font-family: 'mandatoryregular';
+}
+Antigo Novo
+#placa{
+    width: 86%;
+    margin-top: 10%;
+    margin-left: 11%;
+    height: 63%;
+    border: none;
+    text-transform: uppercase;
+    font-size:118pt;
+    font-family: 'fe-font';
+}
+*/
+
+.button {
+    position:absolute;
+    bottom: 18%;
+    margin-left: 39%;
+
+    font-family: 'Kanit', sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 28px;
+    color: #ffffff;
+}
+
+.button:hover {
+    background-color: rgb(0, 26, 121);
+    
+    cursor: pointer;
+}
+
+/* Mudei para Class */
+.btn_payment{
+    color: white;
+    background-color: #0038b1;
+    border-radius: 10px;
+    height: 13%;
+    width: 21%;
+    text-shadow: 1px 2px 2px black;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: bold;
+    text-align: center;
 }

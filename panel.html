@@ -45,7 +45,7 @@
         function populate_table()
         {
             if (!ja_chamou)
-            {                
+            {     
                 var table = document.getElementById("my_table");
                 var numberRows = table.rows.length - 1; //-1 porque a primeira linha da tabela são os nomes das colunas
 
@@ -54,7 +54,7 @@
                     var row = table.insertRow(numberRows + 1);
 
                     var new_row = ["000" + (numberRows + 1), generate_new_random_license(), "Carro", (new Date()).toString().split(' GMT')[0], "pagamento bla", "Não"];
-                    var count = 0;  //inicializar com number of rows?
+                    var count = 0;
 
                     new_row.forEach(element => {
                         var cell = row.insertCell(count);
@@ -95,13 +95,11 @@
             //alert("Sem parar " + sem_parar + " | Tipo " +  tipo);
 
             //alert("Veículo com placa '" + entrance_license + "' entrando...");
-
             if (random_obstructed_license() == 1) {
                 alert("Ooops:( Placa obstruída! Tente entrar novamente ou acione ajuda.");
             } else {
                 var table = document.getElementById("my_table");
                 var numberRows = table.rows.length - 1;
-                //alert("número de linhas é " + numberRows);
 
                 var row = table.insertRow(numberRows + 1);
 
@@ -134,16 +132,21 @@
     </script>
 
 
-    <aside class="control column">
+    <aside class="control column shadow">
 
-        <div>
-            <h2>Placa do veículo</h2>
-            <input id="entrance_license"/>
-
-            <h3>Gerada automaticamente?</h3> 
-            <input class="checkboxes" type="radio" name="random-license-input" value="Sim">Sim
-            <input class="checkboxes" type="radio" name="random-license-input" value="Não">Não
+        <div >
+            <h2 class="placa_veiculo_title">Placa do veículo</h2>
+            <input id="entrance_license" class="round_font"/>
         </div>
+
+        <div class="border">
+            <h3>Gerada automaticamente?</h3> 
+            
+            <input class="checkboxes " type="radio" name="random-license-input" value="Sim">Sim
+            <input class="checkboxes " type="radio" name="random-license-input" value="Não">Não
+        </div>
+            
+        
 
         <div>
             <h3>Possui sem parar?</h3>
@@ -158,7 +161,7 @@
 
 
         <div class="panel">
-            <button id="btn_entrance" onclick="entrance()">Entrada de veículo</button>
+            <button class="round_font" id="btn_entrance" onclick="entrance()">Entrada de veículo</button>
             <h4>Tela do Leo</h4>
         </div>
 
@@ -170,7 +173,7 @@
 
         <div class="panel">
             
-            <button id="btn_exit" onclick="exit()">Saída de veículo</button>
+            <button class="round_font" id="btn_exit" onclick="exit()">Saída de veículo</button>
 
             <h4>Tela do Leo</h1>
 

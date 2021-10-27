@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="pix.css">
+    <title>Pagamento com Pix</title>
+</head>
+<body>
+
+    
+        <header class="header_logo">
+        <h2 class="header_title">Shopping X</h2>
+        <h2>Pagamento de Estacionamento</h2>
+        <br>
+        <div class="pix_container">
+            <h2 >Abra o aplicativo do seu banco pelo smartphone, siga ate a opcao PIX e escolha o “pagamento por QR Code”, e posicione o celular em frente ao codigo para leitura.</h2>
+        </div>
+    </header>
+
+    <div class="teste">
+        <div class="qr_code" id="qrcode"></div>
+        <div class="cancelar" onclick="window.location.href='../metodo_pagamento.html'">Cancelar</div> 
+    </div>
+    
+
+
+    <!--                                                                             espacamento                                                                  -->
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@master/qrcode.js"></script>
+    <script type="text/javascript">
+        var qrcode = new QRCode(document.getElementById("qrcode"), {
+            text: "colocar codigo pix aqui pro andre pagar sem perceber",
+            width: 256,
+            height: 256,
+            colorDark : "#000",
+            colorLight : "#fff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+    </script>
+</body>
+</html>

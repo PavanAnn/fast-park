@@ -16,34 +16,28 @@
             var capital_letters_array = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
             var myArray = [];
             var cont = 0;
-            //while(cont < 20){
-                var placa = "";
-                
-                for (i = 0; i < 3; i++){
-                    var valor_gerado = Math.floor(Math.random() * 26)
-                    placa += capital_letters_array[valor_gerado];
-                }
 
-                for (i = 0; i < 4; i++) {
-                    var valor_gerado = Math.floor(Math.random() * 9)
-                    placa += valor_gerado.toString();
-                }
-                
-                myArray.push(placa)
-                cont++;
-            //}
+            var placa = "";
             
-            //var myArray = ['AAA8A88', 'A909090', 'aaa8a88', 'aAA8A88', '12AAAAA', 'AAA9A99AA', 'AAA8888'];
-            /*var validated = []
-            myArray.forEach(function(item){
-                var value = item.toString().match(re);
+            for (i = 0; i < 3; i++){
+                var valor_gerado = Math.floor(Math.random() * 26)
+                placa += capital_letters_array[valor_gerado];
+            }
 
-                if(value != null)
-                    validated.push(value);
-            })*/
+            for (i = 0; i < 4; i++) {
+                var valor_gerado = Math.floor(Math.random() * 9)
+                placa += valor_gerado.toString();
+            }
+            
+            myArray.push(placa)
+            cont++;
 
             console.log("Nova placa gerada com sucesso   " + myArray[0]);
             return myArray[0];
+        }
+
+        function random_obstructed_license () {
+            return Math.floor(Math.random() * 5);
         }
 
         var ja_chamou = false;
@@ -51,9 +45,7 @@
         function populate_table()
         {
             if (!ja_chamou)
-            {
-                alert("Load table called!")
-                
+            {                
                 var table = document.getElementById("my_table");
                 var numberRows = table.rows.length - 1; //-1 porque a primeira linha da tabela são os nomes das colunas
 
@@ -100,24 +92,28 @@
             else if (inputs_type[1].checked ) { tipo = inputs_type[1].value; }
             else { alert ("Selecione um tipo de veículo"); return}
 
-            alert("Sem parar " + sem_parar + " | Tipo " +  tipo);
+            //alert("Sem parar " + sem_parar + " | Tipo " +  tipo);
 
-            alert("Veículo com placa '" + entrance_license + "' entrando...");
+            //alert("Veículo com placa '" + entrance_license + "' entrando...");
 
-            var table = document.getElementById("my_table");
-            var numberRows = table.rows.length - 1; //-1 porque a primeira linha da tabela são os nomes das colunas
-            alert("número de linhas é " + numberRows);
+            if (random_obstructed_license() == 1) {
+                alert("Ooops:( Placa obstruída! Tente entrar novamente ou acione ajuda.");
+            } else {
+                var table = document.getElementById("my_table");
+                var numberRows = table.rows.length - 1;
+                //alert("número de linhas é " + numberRows);
 
-            var row = table.insertRow(numberRows + 1);
+                var row = table.insertRow(numberRows + 1);
 
-            var new_row = ["000" + (numberRows + 1), entrance_license, tipo, (new Date()).toString().split(' GMT')[0], "pagamento bla", sem_parar];
-            var count = 0;  //inicializar com number of rows?
+                var new_row = ["000" + (numberRows + 1), entrance_license, tipo, (new Date()).toString().split(' GMT')[0], "pagamento bla", sem_parar];
+                var count = 0;
 
-            new_row.forEach(element => {
-                var cell = row.insertCell(count);
-                cell.innerHTML = element;
-                count++;
-            });
+                new_row.forEach(element => {
+                    var cell = row.insertCell(count);
+                    cell.innerHTML = element;
+                    count++;
+                });
+            }
                 
         }
 
@@ -135,27 +131,6 @@
             alert("Apagando os dados...")
         }
 
-        /*
-        function watch( targetElement, triggerFunction ){
-            /// store the original html to compare with later
-            var html = targetElement.innerHTML;
-            /// start our constant checking function
-            setInterval(function(){
-                /// compare the previous html with the current
-                if ( html != targetElement.innerHTML ) {
-                /// trigger our function when a change occurs
-                triggerFunction();
-                /// update html so that this doesn't keep triggering
-                html = targetElement.innerHTML;
-                }
-            },500);
-        }
-
-        function whenChangeHappens(){
-        alert('this will trigger when the html changes in my_target');
-        }
-
-        watch( document.getElementById('mytable'), whenChangeHappens );*/
     </script>
 
 

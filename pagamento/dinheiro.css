@@ -1,0 +1,46 @@
+@font-face {
+    font-family: 'fe-font';
+    src: url('../../Fonts/fe-font-webfont.woff2') format('woff2'),
+         url('../../Fonts/fe-font-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  
+  }
+  body {
+    background-image: url("../../images/hexa.png"); 
+    background-size: 100% 130%;
+  }
+.header_logo {
+    padding-top: 50px;
+    font-size: 15px;
+    text-align: center;
+    color: #fefeff;
+    margin-bottom: 50px;
+    letter-spacing: 1.5px;
+    font-family: 'fe-font';
+}
+.header_title {
+    text-shadow: 1px 2px 2px black;
+    font-size: 50px;
+}
+.dinheiro_text{
+    width: 50%;
+    margin: auto;
+}
+.cancel {
+    margin: auto;
+    color: rgb(223, 209, 209);
+    font-weight: bold;
+    font-style: oblique;  
+    font-size: 40px;
+    text-align: center;
+    background-color: #992120;
+    padding: 25px 0 25px 0;
+    margin-top: 387px;
+    width: 20%;
+    border-radius: 10px;
+}
+.cancel:hover{
+    background-color: #ce0808;
+    cursor: pointer;
+}

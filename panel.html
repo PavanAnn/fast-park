@@ -4,9 +4,32 @@
     <title>Painel</title>
     <link rel='stylesheet' href="panel.css">
 </head>
-<body class="row" onload="populate_table()">
+<body class="row" onload="populate_table()"><!--/body> onload="populate_table()">-->
     
     <script>
+
+        function get_total_a_pagar (tempo, vip) {
+            var taxa_vip = 4;
+            var taxa_tempo = 3;
+            var intervalo = 20;
+            try {
+                var date_now = new Date();
+                var tempo_total = date_now.getHours() + (date_now.getMinutes()/intervalo) - tempo.getHours() + (tempo.getMinutes()/intervalo);
+                
+                var preco_total;
+
+                if (vip != 0)
+                    preco_total = taxa_tempo*tempo_total + taxa_vip;
+                else
+                    preco_total = taxa_tempo*tempo_total;
+
+                return preco_total;
+            }
+            catch {
+                console.log(console.error());
+            }
+        }
+
         function  generate_new_random_license()
         {
             //alert("Gerando nova placa ...");
@@ -47,13 +70,13 @@
             if (!ja_chamou)
             {     
                 var table = document.getElementById("my_table");
-                var numberRows = table.rows.length - 1; //-1 porque a primeira linha da tabela são os nomes das colunas
+                var numberRows = table.rows.length; //-1 porque a primeira linha da tabela são os nomes das colunas
 
                 for (i = 0; i < 5; i++) {
 
                     var row = table.insertRow(numberRows + 1);
 
-                    var new_row = ["000" + (numberRows + 1), generate_new_random_license(), "Carro", (new Date()).toString().split(' GMT')[0], "pagamento bla", "Não"];
+                    var new_row = ["000" + (numberRows + 1), generate_new_random_license(), "Carro", (new Date()).toString().split(' GMT')[0], "NULL", "Não"];
                     var count = 0;
 
                     new_row.forEach(element => {
@@ -102,8 +125,10 @@
                 var numberRows = table.rows.length - 1;
 
                 var row = table.insertRow(numberRows + 1);
-
-                var new_row = ["000" + (numberRows + 1), entrance_license, tipo, (new Date()).toString().split(' GMT')[0], "pagamento bla", sem_parar];
+                var date_now = new Date();
+                var date_later = new Date();
+                date_later.setHours(date_now.getHours() + 2);
+                var new_row = ["000" + (numberRows), entrance_license, tipo, date_now.toString().split(' GMT')[0], "NULL", "R$ " + get_total_a_pagar(date_later, sem_parar) , sem_parar];
                 var count = 0;
 
                 new_row.forEach(element => {
@@ -190,35 +215,10 @@
             <th>Tipo</th>
             <th>Entrada</th>
             <th>Pagamento</th>
+            <th>Total a pagar</th>
             <th>Sem parar</th>
         </thead>
-
-        <tr>
-            <td>0001</td>
-            <td>bla</td>
-            <td>bla</td>
-            <td>bla</td>
-            <td>bla</td>
-            <td>bla</td>
-        </tr>
-
-        <tr>
-            <td>0002</td>
-            <td>bla</td>
-            <td>bla</td>
-            <td>bla</td>
-            <td>bla</td>
-            <td>bla</td>
-        </tr>
-
-        <tr>
-            <td>0003</td>
-            <td>bla</td>
-            <td>bla</td>
-            <td>bla</td>
-            <td>bla</td>
-            <td>bla</td>
-        </tr>
+        <tr></tr>
     </table>
 </body>
 </html>

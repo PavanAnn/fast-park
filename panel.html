@@ -5,8 +5,9 @@
     <link rel='stylesheet' href="panel.css">
 </head>
 <body class="row" onload="populate_table()"><!--/body> onload="populate_table()">-->
+    <script src="testeregex.js"></script>
     
-    <script>
+    <script >
 
         function get_total_a_pagar (tempo, vip) {
             var taxa_vip = 4;
@@ -35,28 +36,7 @@
             //alert("Gerando nova placa ...");
             //console.log("Gerando nova placa...");
 
-            var re = "[A-Z][A-Z][A-Z][0-9][A-Z0-9][0-9][0-9]";
-            var capital_letters_array = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
-            var myArray = [];
-            var cont = 0;
-
-            var placa = "";
-            
-            for (i = 0; i < 3; i++){
-                var valor_gerado = Math.floor(Math.random() * 26)
-                placa += capital_letters_array[valor_gerado];
-            }
-
-            for (i = 0; i < 4; i++) {
-                var valor_gerado = Math.floor(Math.random() * 9)
-                placa += valor_gerado.toString();
-            }
-            
-            myArray.push(placa)
-            cont++;
-
-            console.log("Nova placa gerada com sucesso   " + myArray[0]);
-            return myArray[0];
+            return generate_license();
         }
 
         function random_obstructed_license () {
@@ -76,7 +56,7 @@
 
                     var row = table.insertRow(numberRows + 1);
 
-                    var new_row = ["000" + (numberRows + 1), generate_new_random_license(), "Carro", (new Date()).toString().split(' GMT')[0], "NULL", "Não"];
+                    var new_row = ["000" + (numberRows + 1), generate_license(), "Carro", (new Date()).toString().split(' GMT')[0], "NULL", "Não"];
                     var count = 0;
 
                     new_row.forEach(element => {
@@ -90,34 +70,47 @@
 
         }
 
-        function entrance(){
+        function validate_request (generate_random_license) {
             var entrance_license;
-            var generate_random_license = document.getElementsByName("random-license-input");
-
-            if (generate_random_license[0].checked) { if (generate_random_license[0].value=="Sim" ) entrance_license = generate_new_random_license(); else return;}
+            
+            if (generate_random_license[0].checked) { if (generate_random_license[0].value=="Sim" ) entrance_license = null; else return;}
             else if (generate_random_license[1].checked) { 
-                if (generate_random_license[1].value != "Não") return;
+                if (generate_random_license[1].value != "Não") return ;
                 
                 if (document.getElementById("entrance_license").value == "") { alert("Por favor, digite um valor válido para a placa do veículo ou selecione a opção 'Sim'."); return; }
                 else { entrance_license = document.getElementById("entrance_license").value;  }
             }
-            else { alert("Por favor, digite um valor válido para a placa do veículo ou selecione a opção 'Sim'."); return; }
+            else { alert("Por favor, digite um valor válido para a placa do veículo ou selecione a opção 'Sim'."); return null; }
             
             var sem_parar = 0;
             var inputs_sem_parar = document.getElementsByName("sem-parar-input");
             if (inputs_sem_parar[0].checked ) { sem_parar = inputs_sem_parar[0].value; }
             else if (inputs_sem_parar[1].checked ) { sem_parar = inputs_sem_parar[1].value; }
-            else { alert ("Selecione uma opção de sem-parar"); return}
+            else { alert ("Selecione uma opção de sem-parar"); return  null}
 
             var tipo = 0;
             var inputs_type = document.getElementsByName("type-input");
             if (inputs_type[0].checked ) { tipo = inputs_type[0].value; }
             else if (inputs_type[1].checked ) { tipo = inputs_type[1].value; }
-            else { alert ("Selecione um tipo de veículo"); return}
+            else { alert ("Selecione um tipo de veículo"); return  null}
 
-            //alert("Sem parar " + sem_parar + " | Tipo " +  tipo);
+            return {"entrance_license": entrance_license, "sem_parar": sem_parar, "tipo": tipo};
+        }
 
-            //alert("Veículo com placa '" + entrance_license + "' entrando...");
+        function entrance(){
+            
+            var generate_random_license = document.getElementsByName("random-license-input");
+            var response = validate_request(generate_random_license);
+
+            if (response == null)
+                return;
+                
+            var entrance_license;
+            if (!response.entrance_license)
+                entrance_license = generate_license();
+            var sem_parar = response.sem_parar;
+            var tipo = response.tipo;
+
             if (random_obstructed_license() == 1) {
                 alert("Ooops:( Placa obstruída! Tente entrar novamente ou acione ajuda.");
             } else {

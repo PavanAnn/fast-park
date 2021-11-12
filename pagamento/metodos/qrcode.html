@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <title>Página de Pagamento</title>
+        <meta charset="UTF-8">
+        <link rel='stylesheet' href="qrcode.css">
+    </head>
+    <body>
+        <div id="img_input">
+            <img id="nulogo" src="../../images/logo-nubank-roxo-1024.png">
+            <div id="screen">
+                <p style="color:rgb(0, 0, 0);font-size: 38px; margin-top: -15px;font-weight: bolder;">Transferindo</p>
+                <div class="valor">R$ {{ valor }}</div>
+                <p style="margin-left: 4px; color:black;font-size: 20px;margin-top: 3px"> para </p>
+                <p style="margin-left: 50px; color:black;font-size: 25px;margin-top: -47px;font-weight: bolder;"> Shopping X </p>
+                <p style="margin-left: -28px; color:rgb(214, 212, 212);font-size: 20px;margin-top: -30px;">________________________________</p>
+                <p style="color:rgb(0, 0, 0);font-size: 18px; margin-top: -15px;font-weight: lighter;">Tipo de transferência</p>
+                <p style="margin-left: 2px; color:black;font-size: 20px;margin-top: -17px;font-weight: bold"> <b>Pix</b></p>
+                <p style="margin-left: -28px; color:rgb(214, 212, 212);font-size: 20px;margin-top: -40px;">________________________________</p>
+                <p style="color:rgb(0, 0, 0);font-size: 18px; margin-top:  175px;font-weight: lighter;">CPF &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;***.123.456***</p>
+                <p style="color:rgb(0, 0, 0);font-size: 18px; margin-top: -15px;font-weight: lighter;">Instituição &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;Banco Inter</p>
+                <p style="color:rgb(0, 0, 0);font-size: 18px; margin-top: -15px;font-weight: lighter;">Agência &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&nbsp;&nbsp;1</p>
+                <p style="color:rgb(0, 0, 0);font-size: 18px; margin-top: -15px;font-weight: lighter;">Conta corrente &emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;12345678-9</p>
+            </div>
+            <button class="button btn_transfer" id="btn_transfer" onclick="window.location.href='../pagamento_realizado.html'">Transferir</button>
+        </div>
+    </body>
+</html>

@@ -4,46 +4,43 @@
     <title>Painel</title>
     <link rel='stylesheet' href="panel.css">
 </head>
-<body class="row" onload="populate_table()">
+<body class="row" onload="populate_table()"><!--/body> onload="populate_table()">-->
+    <script src="testeregex.js"></script>
     
-    <script>
+    <script >
+
+        function get_total_a_pagar (tempo, vip) {
+            var taxa_vip = 4;
+            var taxa_tempo = 3;
+            var intervalo = 20;
+            try {
+                var date_now = new Date();
+                var tempo_total = date_now.getHours() + (date_now.getMinutes()/intervalo) - tempo.getHours() + (tempo.getMinutes()/intervalo);
+                
+                var preco_total;
+
+                if (vip != 0)
+                    preco_total = taxa_tempo*tempo_total + taxa_vip;
+                else
+                    preco_total = taxa_tempo*tempo_total;
+
+                return preco_total;
+            }
+            catch {
+                console.log(console.error());
+            }
+        }
+
         function  generate_new_random_license()
         {
             //alert("Gerando nova placa ...");
             //console.log("Gerando nova placa...");
 
-            var re = "[A-Z][A-Z][A-Z][0-9][A-Z0-9][0-9][0-9]";
-            var capital_letters_array = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
-            var myArray = [];
-            var cont = 0;
-            //while(cont < 20){
-                var placa = "";
-                
-                for (i = 0; i < 3; i++){
-                    var valor_gerado = Math.floor(Math.random() * 26)
-                    placa += capital_letters_array[valor_gerado];
-                }
+            return generate_license();
+        }
 
-                for (i = 0; i < 4; i++) {
-                    var valor_gerado = Math.floor(Math.random() * 9)
-                    placa += valor_gerado.toString();
-                }
-                
-                myArray.push(placa)
-                cont++;
-            //}
-            
-            //var myArray = ['AAA8A88', 'A909090', 'aaa8a88', 'aAA8A88', '12AAAAA', 'AAA9A99AA', 'AAA8888'];
-            /*var validated = []
-            myArray.forEach(function(item){
-                var value = item.toString().match(re);
-
-                if(value != null)
-                    validated.push(value);
-            })*/
-
-            console.log("Nova placa gerada com sucesso   " + myArray[0]);
-            return myArray[0];
+        function random_obstructed_license () {
+            return Math.floor(Math.random() * 5);
         }
 
         var ja_chamou = false;
@@ -51,18 +48,16 @@
         function populate_table()
         {
             if (!ja_chamou)
-            {
-                alert("Load table called!")
-                
+            {     
                 var table = document.getElementById("my_table");
-                var numberRows = table.rows.length - 1; //-1 porque a primeira linha da tabela são os nomes das colunas
+                var numberRows = table.rows.length; //-1 porque a primeira linha da tabela são os nomes das colunas
 
                 for (i = 0; i < 5; i++) {
 
                     var row = table.insertRow(numberRows + 1);
 
-                    var new_row = ["000" + (numberRows + 1), generate_new_random_license(), "Carro", (new Date()).toString().split(' GMT')[0], "pagamento bla", "Não"];
-                    var count = 0;  //inicializar com number of rows?
+                    var new_row = ["000" + (numberRows + 1), generate_license(), "Carro", (new Date()).toString().split(' GMT')[0], "NULL", "Não"];
+                    var count = 0;
 
                     new_row.forEach(element => {
                         var cell = row.insertCell(count);
@@ -75,49 +70,66 @@
 
         }
 
-        function entrance(){
+        function validate_request (generate_random_license) {
             var entrance_license;
-            var generate_random_license = document.getElementsByName("random-license-input");
-
-            if (generate_random_license[0].checked) { if (generate_random_license[0].value=="Sim" ) entrance_license = generate_new_random_license(); else return;}
+            
+            if (generate_random_license[0].checked) { if (generate_random_license[0].value=="Sim" ) entrance_license = null; else return;}
             else if (generate_random_license[1].checked) { 
-                if (generate_random_license[1].value != "Não") return;
+                if (generate_random_license[1].value != "Não") return ;
                 
                 if (document.getElementById("entrance_license").value == "") { alert("Por favor, digite um valor válido para a placa do veículo ou selecione a opção 'Sim'."); return; }
                 else { entrance_license = document.getElementById("entrance_license").value;  }
             }
-            else { alert("Por favor, digite um valor válido para a placa do veículo ou selecione a opção 'Sim'."); return; }
+            else { alert("Por favor, digite um valor válido para a placa do veículo ou selecione a opção 'Sim'."); return null; }
             
             var sem_parar = 0;
             var inputs_sem_parar = document.getElementsByName("sem-parar-input");
             if (inputs_sem_parar[0].checked ) { sem_parar = inputs_sem_parar[0].value; }
             else if (inputs_sem_parar[1].checked ) { sem_parar = inputs_sem_parar[1].value; }
-            else { alert ("Selecione uma opção de sem-parar"); return}
+            else { alert ("Selecione uma opção de sem-parar"); return  null}
 
             var tipo = 0;
             var inputs_type = document.getElementsByName("type-input");
             if (inputs_type[0].checked ) { tipo = inputs_type[0].value; }
             else if (inputs_type[1].checked ) { tipo = inputs_type[1].value; }
-            else { alert ("Selecione um tipo de veículo"); return}
+            else { alert ("Selecione um tipo de veículo"); return  null}
 
-            alert("Sem parar " + sem_parar + " | Tipo " +  tipo);
+            return {"entrance_license": entrance_license, "sem_parar": sem_parar, "tipo": tipo};
+        }
 
-            alert("Veículo com placa '" + entrance_license + "' entrando...");
+        function entrance(){
+            
+            var generate_random_license = document.getElementsByName("random-license-input");
+            var response = validate_request(generate_random_license);
 
-            var table = document.getElementById("my_table");
-            var numberRows = table.rows.length - 1; //-1 porque a primeira linha da tabela são os nomes das colunas
-            alert("número de linhas é " + numberRows);
+            if (response == null)
+                return;
+                
+            var entrance_license;
+            if (!response.entrance_license)
+                entrance_license = generate_license();
+            var sem_parar = response.sem_parar;
+            var tipo = response.tipo;
 
-            var row = table.insertRow(numberRows + 1);
+            if (random_obstructed_license() == 1) {
+                alert("Ooops:( Placa obstruída! Tente entrar novamente ou acione ajuda.");
+            } else {
+                var table = document.getElementById("my_table");
+                var numberRows = table.rows.length - 1;
 
-            var new_row = ["000" + (numberRows + 1), entrance_license, tipo, (new Date()).toString().split(' GMT')[0], "pagamento bla", sem_parar];
-            var count = 0;  //inicializar com number of rows?
+                var row = table.insertRow(numberRows + 1);
+                var date_now = new Date();
+                var date_later = new Date();
+                date_later.setHours(date_now.getHours() + 2);
+                var new_row = ["000" + (numberRows), entrance_license, tipo, date_now.toString().split(' GMT')[0], "NULL", "R$ " + get_total_a_pagar(date_later, sem_parar) , sem_parar];
+                var count = 0;
 
-            new_row.forEach(element => {
-                var cell = row.insertCell(count);
-                cell.innerHTML = element;
-                count++;
-            });
+                new_row.forEach(element => {
+                    var cell = row.insertCell(count);
+                    cell.innerHTML = element;
+                    count++;
+                });
+            }
                 
         }
 
@@ -135,40 +147,24 @@
             alert("Apagando os dados...")
         }
 
-        /*
-        function watch( targetElement, triggerFunction ){
-            /// store the original html to compare with later
-            var html = targetElement.innerHTML;
-            /// start our constant checking function
-            setInterval(function(){
-                /// compare the previous html with the current
-                if ( html != targetElement.innerHTML ) {
-                /// trigger our function when a change occurs
-                triggerFunction();
-                /// update html so that this doesn't keep triggering
-                html = targetElement.innerHTML;
-                }
-            },500);
-        }
-
-        function whenChangeHappens(){
-        alert('this will trigger when the html changes in my_target');
-        }
-
-        watch( document.getElementById('mytable'), whenChangeHappens );*/
     </script>
 
 
-    <aside class="control column">
+    <aside class="control column shadow">
 
-        <div>
-            <h2>Placa do veículo</h2>
-            <input id="entrance_license"/>
-
-            <h3>Gerada automaticamente?</h3> 
-            <input class="checkboxes" type="radio" name="random-license-input" value="Sim">Sim
-            <input class="checkboxes" type="radio" name="random-license-input" value="Não">Não
+        <div >
+            <h2 class="placa_veiculo_title">Placa do veículo</h2>
+            <input id="entrance_license" class="round_font"/>
         </div>
+
+        <div class="border">
+            <h3>Gerada automaticamente?</h3> 
+            
+            <input class="checkboxes " type="radio" name="random-license-input" value="Sim">Sim
+            <input class="checkboxes " type="radio" name="random-license-input" value="Não">Não
+        </div>
+            
+        
 
         <div>
             <h3>Possui sem parar?</h3>
@@ -183,7 +179,7 @@
 
 
         <div class="panel">
-            <button id="btn_entrance" onclick="entrance()">Entrada de veículo</button>
+            <button class="round_font" id="btn_entrance" onclick="entrance()">Entrada de veículo</button>
             <h4>Tela do Leo</h4>
         </div>
 
@@ -195,7 +191,7 @@
 
         <div class="panel">
             
-            <button id="btn_exit" onclick="exit()">Saída de veículo</button>
+            <button class="round_font" id="btn_exit" onclick="exit()">Saída de veículo</button>
 
             <h4>Tela do Leo</h1>
 
@@ -212,35 +208,10 @@
             <th>Tipo</th>
             <th>Entrada</th>
             <th>Pagamento</th>
+            <th>Total a pagar</th>
             <th>Sem parar</th>
         </thead>
-
-        <tr>
-            <td>0001</td>
-            <td>bla</td>
-            <td>bla</td>
-            <td>bla</td>
-            <td>bla</td>
-            <td>bla</td>
-        </tr>
-
-        <tr>
-            <td>0002</td>
-            <td>bla</td>
-            <td>bla</td>
-            <td>bla</td>
-            <td>bla</td>
-            <td>bla</td>
-        </tr>
-
-        <tr>
-            <td>0003</td>
-            <td>bla</td>
-            <td>bla</td>
-            <td>bla</td>
-            <td>bla</td>
-            <td>bla</td>
-        </tr>
+        <tr></tr>
     </table>
 </body>
 </html>

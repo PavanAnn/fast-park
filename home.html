@@ -23,17 +23,42 @@
 
 
     </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
 
     <script>
-        function validate(){
+        async function getFromDatabse() {
+            var res;
+            await axios.get('http://localhost:3000/operators')
+                .then(response => { res = response.data;} )
+                .catch(error => console.log(error));
+            return res;
+        }
+
+        async function validate(){
+            const operators = await getFromDatabse();            
+            
+            console.log( operators );
+
+            //var alloperators = app.selectAllOperators();
+            //alloperators.then( function(result) {
+            //    alert(result);
+            //});
             var username = document.getElementById("username").value;
             var password = document.getElementById("password").value;
-
-            if(username == "operador" && password == "1234"){
-                location.href = "panel.html"
-            }
-            else
-                alert("Credenciais inválidas")
+            
+            var exists = 0;
+            operators.forEach( (i) => {
+                alert(i[1]);
+                if(username == i[0] && password == i[1]){
+                    exists = 1;
+                    location.href = "panel.html"
+                    return;
+                }
+                
+            });
+            if ( exists == 0 )
+                alert("Credenciais inválidas");
+            
         }
     </script>
 </html>

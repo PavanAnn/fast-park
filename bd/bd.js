@@ -1,10 +1,8 @@
-const express = require('express')
+//const express = require('express')
 const oracledb = require('oracledb');
-const app = express();
-const port = 3000;
 var password = 'oracle123';
 
-async function selectAllOperators(req, res) {
+exports.selectAllOperators = async() => {
   try {
     connection = await oracledb.getConnection({
       user: "system",
@@ -18,7 +16,7 @@ async function selectAllOperators(req, res) {
 
   } catch (err) {
     //send error message
-    return res.send(err.message);
+    return err.message;
   } finally {
     if (connection) {
       try {
@@ -31,21 +29,16 @@ async function selectAllOperators(req, res) {
     }
     if (result.rows.length == 0) {
       //query return zero employees
-      return res.send('query send no rows');
+      return 'query send no rows';
     } else {
       //send all employees
-      return res.send(result.rows);
+      return result.rows;
     }
 
   }
 }
 
-//get /employess
-app.get('/operators', function (req, res) {
-  selectAllOperators(req, res);
-})
-
-async function selectEmployeesById(req, res, id) {
+exports.selectOperatorById = async (id) => {
   try {
     connection = await oracledb.getConnection({
       user: "system",
@@ -57,7 +50,7 @@ async function selectEmployeesById(req, res, id) {
 
   } catch (err) {
     //send error message
-    return res.send(err.message);
+    return err.message;
   } finally {
     if (connection) {
       try {
@@ -69,24 +62,37 @@ async function selectEmployeesById(req, res, id) {
     }
     if (result.rows.length == 0) {
       //query return zero employees
-      return res.send('query send no rows');
+      return 'query send no rows';
     } else {
       //send all employees
-      return res.send(result.rows);
+      return result.rows;
     }
   }
 }
 
-//get /employee?id=<id employee>
-app.get('/operator', function (req, res) {
-  //get query param ?id
-  let id = req.query.id;
-  // id param if it is number
-  //if (isNaN(id)) {
-  //  res.send('Query param id is not number')
-  //  return
-  //}
-  selectEmployeesById(req, res, id);
-})
+exports.createOperator = async (data) => {
+  try {
+    connection = await oracledb.getConnection({
+      user: "system",
+      password: password,
+      connectString: "localhost:1521/xe"
+    });
+    // run query to get employee with employee_id
+    result = await connection.execute(`insert into operators values (:id, :password)`, [data.id, data.password]);
 
-app.listen(port, () => console.log("nodeOracleRestApi app listening on port %s!", port))
+  } catch (err) {
+    //send error message
+    return err.message;
+  } finally {
+    if (connection) {
+      try {
+        // Always close connections
+        await connection.close(); 
+      } catch (err) {
+        return console.error(err.message);
+      }
+    }
+    
+    return result;
+  }
+}

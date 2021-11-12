@@ -8,7 +8,7 @@ module.exports = () => {
 
   // MIDDLEWARES
   app.use(express.json());
-  
+
   const controller = require('../controllers/OperatorController')();
   
   app.route('/operators').get(controller.getOperators);

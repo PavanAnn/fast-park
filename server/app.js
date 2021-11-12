@@ -1,23 +1,20 @@
-const express = require('express');
-const oracledb = require('oracledb');
-var password = 'oracle123';
+const express    = require('express');
 
-//Conexao com oracleDB
-/*oracledb.getConnection({
-    user: "system",
-    password: password,
-    connectString: "localhost:1521/xe"
-  });
+module.exports = () => {
+  const app = express();
 
-console.log('connected to database');*/
+  // SETANDO VARIÁVEIS DA APLICAÇÃO
+  app.set('port', process.env.PORT || 3000);
 
-// App
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+  // MIDDLEWARES
+  app.use(express.json());
+  // Load routes
+  //const indexRoutes = require('../routes/operators');
+  //app.use('/', indexRoutes);
+  const controller = require('../controllers/OperatorController')();
+  
+  app.route('/operators').get(controller.getOperators);
+  app.route('/operator').get(controller.getOperatorById);
 
-// Load routes
-const indexRoutes = require('../routes/operators');
-app.use('/', indexRoutes);
-
-module.exports = app;
+  return app;
+};

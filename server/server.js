@@ -1,8 +1,13 @@
-const app = require('./app');
-const http = require('http');
-const port = 3000;
+const app = require('./app')();
+const port = app.get('port');
+const cors = require('cors')
 
-app.set('port', port);
+
+app.use(cors()) //habilitando cors na nossa aplicacao
+
+app.listen(port, () => {
+  console.log(`Servidor rodando na porta ${port}`)
+});
 
 // error handler
 function onError(error) {
@@ -10,7 +15,6 @@ function onError(error) {
 }
 
 // server
-const server = http.createServer(app);
-server.listen(port);
-server.on('error', onError);
-console.log(`API is alive on ${port}!`);
+//const server = http.createServer(app);
+//server.listen(port);
+//server.on('error', onError);

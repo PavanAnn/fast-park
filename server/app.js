@@ -8,9 +8,7 @@ module.exports = () => {
 
   // MIDDLEWARES
   app.use(express.json());
-  // Load routes
-  //const indexRoutes = require('../routes/operators');
-  //app.use('/', indexRoutes);
+  
   const controller = require('../controllers/OperatorController')();
   
   app.route('/operators').get(controller.getOperators);

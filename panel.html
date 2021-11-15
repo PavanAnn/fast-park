@@ -114,14 +114,14 @@
             if (random_obstructed_license() == 1) {
                 alert("Ooops:( Placa obstruída! Tente entrar novamente ou acione ajuda.");
             } else {
-                var table = document.getElementById("my_table");
-                var numberRows = table.rows.length - 1;
+                var table = document.getElementById("my_table_tbody");
+                var numberRows = table.rows.length;
 
-                var row = table.insertRow(numberRows + 1);
+                var row = table.insertRow(numberRows);
                 var date_now = new Date();
                 var date_later = new Date();
                 date_later.setHours(date_now.getHours() + 2);
-                var new_row = ["000" + (numberRows), entrance_license, tipo, date_now.toString().split(' GMT')[0], "NULL", "R$ " + get_total_a_pagar(date_later, sem_parar) , sem_parar];
+                var new_row = ["000" + (numberRows + 1), entrance_license, tipo, date_now.toString().split(' GMT')[0], "NULL", "R$ " + get_total_a_pagar(date_later, sem_parar) , sem_parar];
                 var count = 0;
 
                 new_row.forEach(element => {
@@ -139,7 +139,22 @@
                 alert("Por favor, digite um valor válido para a placa do veículo.")
             else{
                 alert("Veículo com placa '" + exit_license + "' saindo...")
-                document.getElementById("my_table").deleteRow(1);
+                var table = document.getElementById("my_table_tbody");
+                var numberRows = table.rows.length - 1;
+                var count = 1;
+                var deleted = 0;
+
+                for (var i = 0; i < table.rows.length; i++) {
+                    if ( table.rows.item(i).cells.item(1).innerHTML == exit_license) {
+                        document.getElementById("my_table_tbody").deleteRow(i);
+                        deleted = 1;
+                    }
+                }
+
+                if (deleted == 0) {
+                    alert("Nenhum registro foi encontrado com a placa fornecida")
+                }
+
             }
         }
 
@@ -211,7 +226,9 @@
             <th>Total a pagar</th>
             <th>Sem parar</th>
         </thead>
-        <tr></tr>
+        <tbody id="my_table_tbody">
+
+        </tbody>
     </table>
 </body>
 </html>

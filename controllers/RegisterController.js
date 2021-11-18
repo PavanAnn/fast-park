@@ -4,9 +4,9 @@ module.exports = () => {
 	const controller = {};
     const request_origin = 'http://127.0.0.1:5500';//req.get('origin'); 
 
-	controller.getRegisters = async(req, res, timestamp) => { 
+	controller.getRegisters = async(req, res, entrance_time) => { 
         res.setHeader('Access-Control-Allow-Origin', request_origin);
-        const result = await bd.selectAllActiveRegisters(timestamp); 
+        const result = await bd.selectAllActiveRegisters(entrance_time); 
         res.status(200).json(result); 
         console.log(result); };
 

@@ -222,7 +222,8 @@ exports.selectPayments = async() => {
       } catch (err) {
         console.error(err.message);
       }
-    }
+    }    
+    if (!result) return 'Response is undefined';
     if (result.rows.length == 0) {
       //query return zero employees
       return 'query send no rows';
@@ -235,6 +236,9 @@ exports.selectPayments = async() => {
 }
 
 exports.selectPaymentByEntranceId = async (entrance_id) => {
+  console.log(entrance_id)
+  entrance_id = 'idteste'
+  console.log(entrance_id)
   var result;
   try {
     connection = await oracledb.getConnection({
@@ -242,8 +246,9 @@ exports.selectPaymentByEntranceId = async (entrance_id) => {
       password: password,
       connectString: "localhost:1521/xe"
     });
+    query = 
     // run query to get employee with employee_id
-    result = await connection.execute(`SELECT * FROM payment where entrance_id=:entrance_id`, [entrance_id]);
+    result = await connection.execute(`SELECT * FROM payment where entrance_id=':entrance_id'`, [entrance_id]);
 
   } catch (err) {
     //send error message
@@ -256,7 +261,9 @@ exports.selectPaymentByEntranceId = async (entrance_id) => {
       } catch (err) {
         return console.error(err.message);
       }
-    }
+    }    
+    console.log(result)
+    if (!result) return 'Response is undefined';
     if (result.rows.length == 0) {
       //query return zero employees
       return 'query send no rows';

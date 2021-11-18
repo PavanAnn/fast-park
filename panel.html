@@ -28,7 +28,7 @@
         async function getActiveRegisters() {
             var date_now = new Date();
             var res;
-            await axios.get('http://localhost:3000/registers', { params: {timestamp: date_now} })
+            await axios.get('http://localhost:3000/registers', { params: {entrance_time: date_now} })
                 .then(response => { res = response.data;} )
                 .catch(error => console.log(error));
             return res;

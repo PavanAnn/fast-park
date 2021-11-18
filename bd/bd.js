@@ -114,7 +114,7 @@ exports.selectAllActiveRegisters = async(entrance_time) => {
 
     console.log('connected to database');
     // run query to get all employees
-    result = await connection.execute(`SELECT * FROM entrance where entrance_time>='(:entrance_time)'`, [entrance_time]);
+    result = await connection.execute(`SELECT * FROM entrance`);// where entrance_time>='(:entrance_time)'`, [entrance_time]);
 
   } catch (err) {
     //send error message

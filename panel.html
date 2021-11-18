@@ -4,7 +4,7 @@
     <title>Painel</title>
     <link rel='stylesheet' href="panel.css">
 </head>
-<body class="row" onload="populate_table()"><!--/body> onload="populate_table()">-->
+<body class="row" onload="populate_table()">
     <script src="testeregex.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
     
@@ -27,8 +27,18 @@
 
         async function getActiveRegisters() {
             var date_now = new Date();
+            var formatted_date = date_now.getFullYear() + '-' + date_now.getMonth() + '-' + date_now.getDay() + 'T' + date_now.getHours() + ':' + date_now.getMinutes() + ':' + date_now.getSeconds() + '.' + date_now.getMilliseconds() + 'Z';
+            console.log(formatted_date)
             var res;
-            await axios.get('http://localhost:3000/registers', { params: {entrance_time: date_now} })
+            await axios.get('http://localhost:3000/registers', { params: {entrance_time: formatted_date} })
+                .then(response => { res = response.data;} )
+                .catch(error => console.log(error));
+            return res;
+        }
+
+        async function getTotalAPagar(entrance_id) {
+            var res;
+            await axios.get('http://localhost:3000/payment', { params: {entrance_id: entrance_id} })
                 .then(response => { res = response.data;} )
                 .catch(error => console.log(error));
             return res;
@@ -68,29 +78,30 @@
             return Math.floor(Math.random() * 5);
         }
 
-        var ja_chamou = false;
-
-        function populate_table()
+        async function populate_table()
         {
-            if (!ja_chamou)
-            {     
+            result = await getActiveRegisters();
+            console.log(result);
+            if (result) {
+                result.forEach( (i) => {
+                //alert(i[1]);
                 var table = document.getElementById("my_table");
                 var numberRows = table.rows.length; //-1 porque a primeira linha da tabela são os nomes das colunas
 
-                for (i = 0; i < 5; i++) {
-
-                    var row = table.insertRow(numberRows + 1);
-
-                    var new_row = ["000" + (numberRows + 1), generate_license(), "Carro", (new Date()).toString().split(' GMT')[0], "NULL", "Não"];
-                    var count = 0;
-
-                    new_row.forEach(element => {
+                var row = table.insertRow(numberRows);
+                payment_value = 0.00
+                try {
+                    payment_value = getTotalAPagar(i[0]);
+                } catch (err) { console.log(err) }
+                var new_row = [i[0], i[1], "Carro", i[2], i[3], payment_value , i[4]]
+                var count = 0;
+                new_row.forEach(element => {
                         var cell = row.insertCell(count);
                         cell.innerHTML = element;
                         count++;
                     });
-                    
-                }
+                
+            });
             }
 
         }
@@ -249,9 +260,10 @@
             <th>Entrada</th>
             <th>Pagamento</th>
             <th>Total a pagar</th>
-            <th>Sem parar</th>
+            <th>Tipo</th>
         </thead>
         <tbody id="my_table_tbody">
+            <tr></tr>
 
         </tbody>
     </table>

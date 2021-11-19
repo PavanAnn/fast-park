@@ -38,6 +38,12 @@ thead{
     height: 8rem;
 }
 
+
+button:hover{
+    cursor: pointer;
+    filter: brightness(130%);
+}
+
 .control button{
     color: white;
     height: 80;
@@ -54,7 +60,14 @@ thead{
 }
 
 #btn_erase_data{
-    background-color: rgb(240, 185, 84);
+    background-color: rgb(223, 0, 0);
+}
+
+.btn_payment{
+    border-radius: 10px;
+    font-size: 20px;
+    background-color: #ff8e25;
+    margin-bottom: 30px;
 }
 
 .checkboxes{
@@ -102,3 +115,6 @@ aside > div {
     clear: both;
   }*/
  
+  .tester {
+      border: 1px solid red;
+  }

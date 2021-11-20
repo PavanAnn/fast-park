@@ -27,16 +27,15 @@
                 //alert(sURLVariables[1]);  
                 payment_value = await getPaymentValue( sURLVariables[1] );
                 document.getElementById("payment_value").innerHTML = "R$ " + payment_value;
-                if (!payment_value && payment_value != 'Response is undefined') {
-                    if (payment_value == 'query send no rows')
+                if (payment_value == 'query send no rows') {
                         alert("Registro com placa fornecida não foi encontrado")
-                    else
-                        document.getElementById("payment_value").innerHTML = "R$ " + payment_value;
                 }
-                else {
+                else if ( payment_value == 'Response is undefined') {
                     alert("Erro ao buscar registro")
                     document.getElementById("payment_value").innerHTML = "R$ 5,99";
-                }
+                } 
+                else
+                    document.getElementById("payment_value").innerHTML = "R$ " + payment_value[0][3]; //idpagamento,idteste,CARTAO,20.990000000000002,2021-11-20T22:27:32.890Z
             }
         }
     </script>

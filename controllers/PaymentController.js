@@ -4,21 +4,22 @@ module.exports = () => {
 	const controller = {};
     const request_origin = 'http://127.0.0.1:5500';//req.get('origin'); 
 
-	controller.getPayments = async(req, res, entrance_time) => { 
+	controller.getPayments = async(req, res) => { 
         res.setHeader('Access-Control-Allow-Origin', request_origin);
-        const result = await bd.selectPayments(entrance_time); 
+        const result = await bd.selectPayments(req); 
         res.status(200).json(result); 
         console.log(result); };
 
-        controller.getPaymentByEntranceId = async(req, res, entrance_id) => { 
-            res.setHeader('Access-Control-Allow-Origin', request_origin);
-            const result = await bd.selectPaymentByEntranceId(entrance_id); 
-            res.status(200).json(result); 
-            console.log(result); };
+    controller.getPaymentByEntranceId = async(req, res) => { 
+        res.setHeader('Access-Control-Allow-Origin', request_origin);
+        const result = await bd.selectPaymentByEntranceId(req); 
+        res.status(200).json(result); 
+        console.log(result); 
+    };
 
-    controller.createPayment = async(req, res, id, license, entrance_type) => { 
+    controller.createPayment = async(req, res) => { 
         res.setHeader('Access-Control-Allow-Origin', request_origin); 
-        const result = await bd.insertPayment(id, license, entrance_type); 
+        const result = await bd.insertPayment(req); 
         res.status(200).json(result); 
         console.log(result); };
         

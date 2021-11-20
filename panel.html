@@ -79,31 +79,44 @@
         }
 
         async function populate_table()
-        {
-            result = await getActiveRegisters();
+        {            
+            var result;
+            result = await  getActiveRegisters();
             console.log(result);
+            
+            
             if (result) {
                 result.forEach( (i) => {
-                //alert(i[1]);
-                var table = document.getElementById("my_table");
-                var numberRows = table.rows.length; //-1 porque a primeira linha da tabela são os nomes das colunas
+                    //alert(i[1]);
+                    var table = document.getElementById("my_table");
+                    var numberRows = table.rows.length; //-1 porque a primeira linha da tabela são os nomes das colunas
 
-                var row = table.insertRow(numberRows);
-                payment_value = 0.00
-                try {
-                    payment_value = getTotalAPagar(i[0]);
+                    var row = table.insertRow(numberRows);
+                    payment_value = 0.00
+                    var new_row = [i[0], i[1], "Carro", i[2], i[3], "R$" + 0.00 , i[4]]
+                    var count = 0;
+                    new_row.forEach(element => {
+                            var cell = row.insertCell(count);
+                            cell.innerHTML = element;
+                            count++;
+                        });
+                    
+                });
+            }            
+        }
+
+        async function showPaymentValue () {
+            
+            try {
+                    var table = document.getElementById("my_table");
+                    var numberRows = table.rows.length;
+                    
+                    for (var i = 1; i < numberRows; i++) {
+                        var value_to_pay =  await getTotalAPagar(table.rows[i].cells[0].innerHTML);
+                        table.rows[i].cells[5].innerHTML = "R$ " + (value_to_pay[0][3]).toString().substring(0,5);
+                    }
+
                 } catch (err) { console.log(err) }
-                var new_row = [i[0], i[1], "Carro", i[2], i[3], payment_value , i[4]]
-                var count = 0;
-                new_row.forEach(element => {
-                        var cell = row.insertCell(count);
-                        cell.innerHTML = element;
-                        count++;
-                    });
-                
-            });
-            }
-
         }
 
         function validate_request (generate_random_license) {
@@ -253,7 +266,7 @@
 
 
     <table id="my_table" class="column">
-        <thead>
+        <tr>
             <th>#</th>
             <th>Placa</th>
             <th>Tipo</th>
@@ -261,11 +274,13 @@
             <th>Pagamento</th>
             <th>Total a pagar</th>
             <th>Tipo</th>
-        </thead>
-        <tbody id="my_table_tbody">
+        </tr>
+        <!--<tbody id="my_table_tbody">
             <tr></tr>
 
-        </tbody>
+        </tbody>-->
     </table>
+
+    <button id="btnCalcularSalario" onclick="showPaymentValue()">Calcular salario</button>
 </body>
 </html>

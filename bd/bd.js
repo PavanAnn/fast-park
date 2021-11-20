@@ -40,7 +40,7 @@ exports.selectAllOperators = async() => {
   }
 }
 
-exports.selectOperatorById = async (id) => {
+exports.selectOperatorById = async (req) => {
   var result;
   try {
     connection = await oracledb.getConnection({
@@ -49,7 +49,7 @@ exports.selectOperatorById = async (id) => {
       connectString: "localhost:1521/xe"
     });
     // run query to get employee with employee_id
-    result = await connection.execute(`SELECT * FROM operator where id=:id`, [id]);
+    result = await connection.execute(`SELECT * FROM operator where id=:id`, [req.query.id]);
 
   } catch (err) {
     //send error message
@@ -103,7 +103,7 @@ exports.createOperator = async (data) => {
 
 //ENTRANCE REGISTERS
 
-exports.selectAllActiveRegisters = async(entrance_time) => {
+exports.selectAllActiveRegisters = async(req) => {
   var result;
   try {
     connection = await oracledb.getConnection({
@@ -114,7 +114,7 @@ exports.selectAllActiveRegisters = async(entrance_time) => {
 
     console.log('connected to database');
     // run query to get all employees
-    result = await connection.execute(`SELECT * FROM entrance`);// where entrance_time>='(:entrance_time)'`, [entrance_time]);
+    result = await connection.execute(`SELECT * FROM entrance`);// where entrance_time>='(:entrance_time)'`, [req.entrance_time]);
 
   } catch (err) {
     //send error message
@@ -141,7 +141,7 @@ exports.selectAllActiveRegisters = async(entrance_time) => {
   }
 }
 
-exports.insertRegister = async (data) => {
+exports.insertRegister = async (req) => {
   var result;
   try {
     connection = await oracledb.getConnection({
@@ -149,7 +149,7 @@ exports.insertRegister = async (data) => {
       password: password,
       connectString: "localhost:1521/xe"
     });
-    result = await connection.execute(`insert into entrance (id, license_plate, entrance_type) values (:id, :license, :entrance_type)`, [data.id, data.license, data.entrance_type]);
+    result = await connection.execute(`insert into entrance (id, license_plate, entrance_type) values (:id, :license, :entrance_type)`, [req.query.id, req.query.license, req.query.entrance_type]);
 
   } catch (err) {
     //send error message
@@ -168,7 +168,7 @@ exports.insertRegister = async (data) => {
   }
 }
 
-exports.updateRegister = async (data) => {
+exports.updateRegister = async (req) => {
   var result;
   try {
     connection = await oracledb.getConnection({
@@ -177,7 +177,7 @@ exports.updateRegister = async (data) => {
       connectString: "localhost:1521/xe"
     });
     // run query to get employee with employee_id
-    result = await connection.execute(`update entrance set exit_time=(:exit_time) where license_plate=(:license) and entrance_time=(:entrance_time);`, [data.exit_time, data.license, data.entrance_time]);
+    result = await connection.execute(`update entrance set exit_time=(:exit_time) where license_plate=(:license) and entrance_time=(:entrance_time);`, [req.query.exit_time, req.query.license, req.query.entrance_time]);
 
   } catch (err) {
     //send error message
@@ -235,10 +235,7 @@ exports.selectPayments = async() => {
   }
 }
 
-exports.selectPaymentByEntranceId = async (entrance_id) => {
-  console.log(entrance_id)
-  entrance_id = 'idteste'
-  console.log(entrance_id)
+exports.selectPaymentByEntranceId = async (req) => {
   var result;
   try {
     connection = await oracledb.getConnection({
@@ -246,9 +243,8 @@ exports.selectPaymentByEntranceId = async (entrance_id) => {
       password: password,
       connectString: "localhost:1521/xe"
     });
-    query = 
     // run query to get employee with employee_id
-    result = await connection.execute(`SELECT * FROM payment where entrance_id=':entrance_id'`, [entrance_id]);
+    result = await connection.execute(`SELECT * FROM payment where entrance_id=:entrance_id`, [req.query.entrance_id]); //
 
   } catch (err) {
     //send error message
@@ -262,7 +258,7 @@ exports.selectPaymentByEntranceId = async (entrance_id) => {
         return console.error(err.message);
       }
     }    
-    console.log(result)
+    console.log("Pagamentos: " + result)
     if (!result) return 'Response is undefined';
     if (result.rows.length == 0) {
       //query return zero employees
@@ -274,7 +270,7 @@ exports.selectPaymentByEntranceId = async (entrance_id) => {
   }
 }
 
-exports.insertPayment = async (data) => {
+exports.insertPayment = async (req) => {
   var result;
   try {
     connection = await oracledb.getConnection({
@@ -283,7 +279,7 @@ exports.insertPayment = async (data) => {
       connectString: "localhost:1521/xe"
     });
     // run query to get employee with employee_id
-    result = await connection.execute(`insert into payment (id, entrance_id, payment_type, payment_value) values(:id, :entrance_id, :payment_type, :payment_value)`, [data.id, data.entrance_id, data.payment_type, data.payment_value]);
+    result = await connection.execute(`insert into payment (id, entrance_id, payment_type, payment_value) values(:id, :entrance_id, :payment_type, :payment_value)`, [req.query.id, data.entrance_id, req.query.payment_type, req.query.payment_value]);
 
   } catch (err) {
     //send error message

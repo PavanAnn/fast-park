@@ -17,12 +17,12 @@ module.exports = () => {
   app.route('/operator').get(controllerOperators.getOperatorById);
 
   app.route('/registers').get(controllerRegisters.getRegisters);
-  app.route('/register').put(controllerRegisters.createRegister);
+  app.route('/register').post(controllerRegisters.createRegister);
   app.route('/register').patch(controllerRegisters.updateRegister);
   
   app.route('/payments').get(controllerPayments.getPayments);
   app.route('/payment').get(controllerPayments.getPaymentByEntranceId);
-  app.route('/payment').put(controllerPayments.createPayment);
+  app.route('/payment').post(controllerPayments.createPayment);
 
   return app;
 };

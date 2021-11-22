@@ -11,13 +11,13 @@
     <script >
         async function insertRegister(id, license, entrance_type) {
             var res;
-            await axios.put('http://localhost:3000/register',  { params: {id: id, license: license, entrance_type: entrance_type} })
+            await axios.post('http://localhost:3000/register',  { params: {id: id, license: license, entrance_type: entrance_type} })
                 .then(response => { res = response.data;} )
                 .catch(error => console.log(error));
             return res;
         }
 
-        async function updateRegister(license) {
+        async function updateRegister(license, exit_time, entrance_time) {
             var res;
             await axios.patch('http://localhost:3000/register',  { params: {exit_time: exit_time, license: license, entrance_time: entrance_time} })
                 .then(response => { res = response.data;} )
@@ -148,7 +148,11 @@
             return {"entrance_license": entrance_license, "sem_parar": sem_parar, "tipo": tipo};
         }
 
-        function entrance(){
+        function generateId (numberRows) {
+            return "000" + numberRows;
+        }
+
+        async function entrance(){
             
             var generate_random_license = document.getElementsByName("random-license-input");
             var response = validate_request(generate_random_license);
@@ -172,8 +176,9 @@
                 var date_now = new Date();
                 var date_later = new Date();
                 date_later.setHours(date_now.getHours() + 2);
+                var id = generateId(numberRows);
 
-                var new_row = ["000" + (numberRows), entrance_license, tipo, date_now.toString().split(' GMT')[0], "NULL", " " + get_total_a_pagar(date_later, sem_parar) , sem_parar];
+                var new_row = [id, entrance_license, tipo, date_now.toString().split(' GMT')[0], "NULL", " " + get_total_a_pagar(date_later, sem_parar) , sem_parar];
 
                 var count = 0;
 
@@ -182,11 +187,13 @@
                     cell.innerHTML = element;
                     count++;
                 });
+
+                await insertRegister(id, entrance_license, tipo);
             }
                 
         }
 
-        function exit(){
+        async function exit(){
             var exit_license = document.getElementById("exit_license").value;
             if (exit_license == "")
                 alert("Por favor, digite um valor válido para a placa do veículo.")
@@ -196,9 +203,11 @@
                 var numberRows = table.rows.length - 1;
                 var count = 1;
                 var deleted = 0;
+                var entrance_time;
 
                 for (var i = 0; i < table.rows.length; i++) {
                     if ( table.rows.item(i).cells.item(1).innerHTML == exit_license) {
+                        entrance_time = table.rows.item(i).cells.item(3);
                         document.getElementById("my_table").deleteRow(i);
                         deleted = 1;
                     }
@@ -206,6 +215,9 @@
 
                 if (deleted == 0) {
                     alert("Nenhum registro foi encontrado com a placa fornecida")
+                } else {
+                    
+                    await updateRegister(exit_license, new Date(), entrance_time);
                 }
 
             }

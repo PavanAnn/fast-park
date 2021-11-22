@@ -59,7 +59,9 @@
                 else
                     preco_total = taxa_tempo*tempo_total;
 
-                return preco_total;
+               //Formatar preço com padrões pr-br      
+                var preco_total_formatado = preco_total.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});    
+                return preco_total_formatado;
             }
             catch {
                 console.log(console.error());
@@ -170,7 +172,9 @@
                 var date_now = new Date();
                 var date_later = new Date();
                 date_later.setHours(date_now.getHours() + 2);
-                var new_row = ["000" + (numberRows + 1), entrance_license, tipo, date_now.toString().split(' GMT')[0], "NULL", "R$ " + get_total_a_pagar(date_later, sem_parar) , sem_parar];
+
+                var new_row = ["000" + (numberRows), entrance_license, tipo, date_now.toString().split(' GMT')[0], "NULL", " " + get_total_a_pagar(date_later, sem_parar) , sem_parar];
+
                 var count = 0;
 
                 new_row.forEach(element => {
@@ -258,7 +262,13 @@
             <button class="round_font" id="btn_exit" onclick="exit()">Saída de veículo</button>
 
             <h4>Tela do Leo</h1>
+        </div>
 
+        <div> <!-- Mover para algum lugar entre a Entrada e a Saida  -->
+            <button class="btn_payment" onclick="window.location.href='./pagamento/inserir_placa.html'">Pagamento</button>
+        </div>
+
+        <div>
             <button id="btn_erase_data" onclick="erase_data()">Apagar todos os dados</button>
         </div>
 

@@ -37,7 +37,7 @@
         async function validate(){
             const operators = await getFromDatabse();            
             
-            console.log( operators );
+            //console.log( operators );
 
             //var alloperators = app.selectAllOperators();
             //alloperators.then( function(result) {
@@ -48,7 +48,6 @@
             
             var exists = 0;
             operators.forEach( (i) => {
-                alert(i[1]);
                 if(username == i[0] && password == i[1]){
                     exists = 1;
                     location.href = "panel.html"

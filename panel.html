@@ -4,10 +4,45 @@
     <title>Painel</title>
     <link rel='stylesheet' href="panel.css">
 </head>
-<body class="row" onload="populate_table()"><!--/body> onload="populate_table()">-->
+<body class="row" onload="populate_table()">
     <script src="testeregex.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
     
     <script >
+        async function insertRegister(id, license, entrance_type) {
+            var res;
+            await axios.put('http://localhost:3000/register',  { params: {id: id, license: license, entrance_type: entrance_type} })
+                .then(response => { res = response.data;} )
+                .catch(error => console.log(error));
+            return res;
+        }
+
+        async function updateRegister(license) {
+            var res;
+            await axios.patch('http://localhost:3000/register',  { params: {exit_time: exit_time, license: license, entrance_time: entrance_time} })
+                .then(response => { res = response.data;} )
+                .catch(error => console.log(error));
+            return res;
+        }
+
+        async function getActiveRegisters() {
+            var date_now = new Date();
+            var formatted_date = date_now.getFullYear() + '-' + date_now.getMonth() + '-' + date_now.getDay() + 'T' + date_now.getHours() + ':' + date_now.getMinutes() + ':' + date_now.getSeconds() + '.' + date_now.getMilliseconds() + 'Z';
+            console.log(formatted_date)
+            var res;
+            await axios.get('http://localhost:3000/registers', { params: {entrance_time: formatted_date} })
+                .then(response => { res = response.data;} )
+                .catch(error => console.log(error));
+            return res;
+        }
+
+        async function getTotalAPagar(entrance_id) {
+            var res;
+            await axios.get('http://localhost:3000/payment', { params: {entrance_id: entrance_id} })
+                .then(response => { res = response.data;} )
+                .catch(error => console.log(error));
+            return res;
+        }
 
         function get_total_a_pagar (tempo, vip) {
             var taxa_vip = 4;
@@ -45,31 +80,45 @@
             return Math.floor(Math.random() * 5);
         }
 
-        var ja_chamou = false;
+        async function populate_table()
+        {            
+            var result;
+            result = await  getActiveRegisters();
+            console.log(result);
+            
+            
+            if (result) {
+                result.forEach( (i) => {
+                    //alert(i[1]);
+                    var table = document.getElementById("my_table");
+                    var numberRows = table.rows.length; //-1 porque a primeira linha da tabela são os nomes das colunas
 
-        function populate_table()
-        {
-            if (!ja_chamou)
-            {     
-                var table = document.getElementById("my_table");
-                var numberRows = table.rows.length; //-1 porque a primeira linha da tabela são os nomes das colunas
-
-                for (i = 0; i < 5; i++) {
-
-                    var row = table.insertRow(numberRows + 1);
-
-                    var new_row = ["000" + (numberRows + 1), generate_license(), "Carro", (new Date()).toString().split(' GMT')[0], "NULL", "Não"];
+                    var row = table.insertRow(numberRows);
+                    payment_value = 0.00
+                    var new_row = [i[0], i[1], "Carro", i[2], i[3], "R$" + 0.00 , i[4]]
                     var count = 0;
-
                     new_row.forEach(element => {
-                        var cell = row.insertCell(count);
-                        cell.innerHTML = element;
-                        count++;
-                    });
+                            var cell = row.insertCell(count);
+                            cell.innerHTML = element;
+                            count++;
+                        });
                     
-                }
-            }
+                });
+            }            
+        }
 
+        async function showPaymentValue () {
+            
+            try {
+                    var table = document.getElementById("my_table");
+                    var numberRows = table.rows.length;
+                    
+                    for (var i = 1; i < numberRows; i++) {
+                        var value_to_pay =  await getTotalAPagar(table.rows[i].cells[0].innerHTML);
+                        table.rows[i].cells[5].innerHTML = "R$ " + (value_to_pay[0][3]).toString().substring(0,5);
+                    }
+
+                } catch (err) { console.log(err) }
         }
 
         function validate_request (generate_random_license) {
@@ -116,14 +165,16 @@
             if (random_obstructed_license() == 1) {
                 alert("Ooops:( Placa obstruída! Tente entrar novamente ou acione ajuda.");
             } else {
-                var table = document.getElementById("my_table");
-                var numberRows = table.rows.length - 1;
+                var table = document.getElementById("my_table_tbody");
+                var numberRows = table.rows.length;
 
-                var row = table.insertRow(numberRows + 1);
+                var row = table.insertRow(numberRows);
                 var date_now = new Date();
                 var date_later = new Date();
                 date_later.setHours(date_now.getHours() + 2);
+
                 var new_row = ["000" + (numberRows), entrance_license, tipo, date_now.toString().split(' GMT')[0], "NULL", " " + get_total_a_pagar(date_later, sem_parar) , sem_parar];
+
                 var count = 0;
 
                 new_row.forEach(element => {
@@ -141,7 +192,22 @@
                 alert("Por favor, digite um valor válido para a placa do veículo.")
             else{
                 alert("Veículo com placa '" + exit_license + "' saindo...")
-                document.getElementById("my_table").deleteRow(1);
+                var table = document.getElementById("my_table_tbody");
+                var numberRows = table.rows.length - 1;
+                var count = 1;
+                var deleted = 0;
+
+                for (var i = 0; i < table.rows.length; i++) {
+                    if ( table.rows.item(i).cells.item(1).innerHTML == exit_license) {
+                        document.getElementById("my_table_tbody").deleteRow(i);
+                        deleted = 1;
+                    }
+                }
+
+                if (deleted == 0) {
+                    alert("Nenhum registro foi encontrado com a placa fornecida")
+                }
+
             }
         }
 
@@ -210,16 +276,21 @@
 
 
     <table id="my_table" class="column">
-        <thead>
+        <tr>
             <th>#</th>
             <th>Placa</th>
             <th>Tipo</th>
             <th>Entrada</th>
             <th>Pagamento</th>
             <th>Total a pagar</th>
-            <th>Sem parar</th>
-        </thead>
-        <tr></tr>
+            <th>Tipo</th>
+        </tr>
+        <!--<tbody id="my_table_tbody">
+            <tr></tr>
+
+        </tbody>-->
     </table>
+
+    <button id="btnCalcularSalario" onclick="showPaymentValue()">Calcular salario</button>
 </body>
 </html>

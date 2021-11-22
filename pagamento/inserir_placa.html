@@ -6,6 +6,13 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Kanit">
     </head>
     <body>
+        <script>
+            //redirecionar
+            function redirect() {
+                var entrance_id = 'idteste';
+                window.location.href='/pagamento/metodo_pagamento.html?id='+entrance_id;
+            }
+        </script>
         <header class="header_logo">
             <h1 class="header_title">SHOPPING X</h1>
             <h2>Pagamento de Estacionamento</h2>
@@ -14,7 +21,7 @@
         <div id="img_input">
             <input id="placa" class="submit_text" maxlength="7"/>
         </div>
-        <button class="button btn_payment" id="btn_payment" onclick="window.location.href='/pagamento/metodo_pagamento.html'">PAGAR</button>
+        <button class="button btn_payment" id="btn_payment" onclick="redirect()">PAGAR</button>
 
     </body>
 </html>

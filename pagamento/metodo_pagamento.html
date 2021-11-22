@@ -24,7 +24,7 @@
                 sURLVariables = sPageURL.split('='),
                 sParameterName,
                 i;
-                //alert(sURLVariables[1]);  
+                alert(sURLVariables[1]);  
                 payment_value = await getPaymentValue( sURLVariables[1] );
                 document.getElementById("payment_value").innerHTML = "R$ " + payment_value;
                 if (payment_value == 'query send no rows') {
@@ -35,8 +35,18 @@
                     document.getElementById("payment_value").innerHTML = "R$ 5,99";
                 } 
                 else
-                    document.getElementById("payment_value").innerHTML = "R$ " + payment_value[0][3]; //idpagamento,idteste,CARTAO,20.990000000000002,2021-11-20T22:27:32.890Z
+                    document.getElementById("payment_value").innerHTML = "R$ " + (payment_value[0][3]).toString().substring(0,5); //idpagamento,idteste,CARTAO,20.990000000000002,2021-11-20T22:27:32.890Z
             }
+        }
+
+        function redirect(type) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('='),
+                sParameterName,
+                i;
+                //alert(sURLVariables[1]);  
+            var entrance_id = sURLVariables[1];
+            window.location.href = type + '?id=' + entrance_id;
         }
     </script>
     <header class="header_logo">
@@ -52,10 +62,10 @@
     <!-- Seleção do método de pagamento -->
     <div class="wrapper">
         
-        <div onclick="window.location.href='./metodos/pix.html'">Pix</div>
-        <div onclick="window.location.href='./metodos/cartão_crédito.html'">Cartão de Crédito</div>
-        <div onclick="window.location.href='./metodos/dinheiro.html'">Dinheiro</div>
-        <div onclick="window.location.href='./metodos/cartão_debito.html'">Cartão de Débito</div>
+        <div onclick="redirect('./metodos/pix.html')">Pix</div>
+        <div onclick="redirect('./metodos/cartão_crédito.html')">Cartão de Crédito</div>
+        <div onclick="redirect('./metodos/dinheiro.html')">Dinheiro</div>
+        <div onclick="redirect('./metodos/cartão_debito.html')">Cartão de Débito</div>
 
     </div>
 

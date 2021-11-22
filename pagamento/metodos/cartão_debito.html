@@ -6,6 +6,17 @@
     <title>Pagamento com cartao de débito</title>
 </head>
 <body>
+    <script>
+        function redirect() {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('='),
+                sParameterName,
+                i;
+                //alert(sURLVariables[1]);  
+            var entrance_id = sURLVariables[1];
+            window.location.href='/pagamento/metodo_pagamento.html?id='+entrance_id;
+        }
+    </script>
     <header class="header_logo">
       <h2 class="header_title">Shopping X</h1>
       <h2>Pagamento de Estacionamento</h1>
@@ -19,6 +30,6 @@
       <div class="imgpos">
           <img src="../../images/image-asset.png">
       </div>
-      <div class="cancel" onclick="window.location.href='../metodo_pagamento.html'">Cancelar</div> 
+      <div class="cancel" onclick="redirect()">Cancelar</div> 
 </body>
 </html>

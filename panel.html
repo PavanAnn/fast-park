@@ -91,7 +91,7 @@
                 result.forEach( (i) => {
                     //alert(i[1]);
                     var table = document.getElementById("my_table");
-                    var numberRows = table.rows.length; //-1 porque a primeira linha da tabela são os nomes das colunas
+                    var numberRows = table.rows.length;
 
                     var row = table.insertRow(numberRows);
                     payment_value = 0.00
@@ -165,7 +165,7 @@
             if (random_obstructed_license() == 1) {
                 alert("Ooops:( Placa obstruída! Tente entrar novamente ou acione ajuda.");
             } else {
-                var table = document.getElementById("my_table_tbody");
+                var table = document.getElementById("my_table");
                 var numberRows = table.rows.length;
 
                 var row = table.insertRow(numberRows);
@@ -192,14 +192,14 @@
                 alert("Por favor, digite um valor válido para a placa do veículo.")
             else{
                 alert("Veículo com placa '" + exit_license + "' saindo...")
-                var table = document.getElementById("my_table_tbody");
+                var table = document.getElementById("my_table");
                 var numberRows = table.rows.length - 1;
                 var count = 1;
                 var deleted = 0;
 
                 for (var i = 0; i < table.rows.length; i++) {
                     if ( table.rows.item(i).cells.item(1).innerHTML == exit_license) {
-                        document.getElementById("my_table_tbody").deleteRow(i);
+                        document.getElementById("my_table").deleteRow(i);
                         deleted = 1;
                     }
                 }

@@ -9,7 +9,8 @@
         <script>
             //redirecionar
             function redirect() {
-                var entrance_id = 'idteste';
+                var entrance_id = document.getElementById("placa").value;
+                //alert(entrance_id)
                 window.location.href='/pagamento/metodo_pagamento.html?id='+entrance_id;
             }
         </script>

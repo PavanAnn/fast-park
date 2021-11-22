@@ -35,7 +35,7 @@
     color: #fefeff;
     margin-bottom: 50px;
     letter-spacing: 1.5px;
-    font-family: 'fe-font';
+    font-family: 'Kanit', sans-serif;
 
   }
 
@@ -50,8 +50,9 @@
     margin: auto;
     color: rgb(223, 209, 209);
     font-weight: bold;
-    font-style: oblique;  
+    font-style: normal;  
     font-size: 40px;
+    text-shadow: 1px 2px 2px black;
     text-align: center;
     background-color: #992120;
     padding: 25px 0 25px 0;

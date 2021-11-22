@@ -12,7 +12,6 @@
          url('../Fonts/fe-font-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-
 }
 
 body{
@@ -69,32 +68,6 @@ body{
     font-family: 'fe-font';
     outline: none;
 }
-
-/*
-Antigo
-#placa{
-    width: 88%;
-    margin-top: 10%;
-    margin-left: 10%;
-    height: 63%;
-    border: none;
-    text-transform: uppercase;
-    text-align: center;
-    font-size:120pt;
-    font-family: 'mandatoryregular';
-}
-Antigo Novo
-#placa{
-    width: 86%;
-    margin-top: 10%;
-    margin-left: 11%;
-    height: 63%;
-    border: none;
-    text-transform: uppercase;
-    font-size:118pt;
-    font-family: 'fe-font';
-}
-*/
 
 .button {
     position:absolute;

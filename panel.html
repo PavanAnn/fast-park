@@ -76,6 +76,38 @@
             return generate_license();
         }
 
+        function uuid() {
+            //solucao https://pt.stackoverflow.com/questions/198003/como-gerar-uuids-guids-com-javascript
+        // Retorna um número randômico entre 0 e 15.
+        function randomDigit() {
+
+            // Se o browser tiver suporte às bibliotecas de criptografia, utilize-as;
+            if (crypto && crypto.getRandomValues) {
+            
+                // Cria um array contendo 1 byte:
+                var rands = new Uint8Array(1);
+                
+                // Popula o array com valores randômicos
+                crypto.getRandomValues(rands);
+                
+                // Retorna o módulo 16 do único valor presente (%16) em formato hexadecimal
+                return (rands[0] % 16).toString(16);
+            } else {
+            // Caso não, utilize random(), que pode ocasionar em colisões (mesmos valores
+            // gerados mais frequentemente):
+                return ((Math.random() * 16) | 0).toString(16);
+            }
+        }
+
+        // A função pode utilizar a biblioteca de criptografia padrão, ou
+        // msCrypto se utilizando um browser da Microsoft anterior à integração.
+        var crypto = window.crypto || window.msCrypto;
+
+        // para cada caracter [x] na string abaixo um valor hexadecimal é gerado via
+        // replace:
+        return 'xxxxxxxx-xxxx-4xxx-8xxx-xxxxxxxxxxxx'.replace(/x/g, randomDigit);
+        }
+
         function random_obstructed_license () {
             return Math.floor(Math.random() * 5);
         }
@@ -95,7 +127,9 @@
 
                     var row = table.insertRow(numberRows);
                     payment_value = 0.00
-                    var new_row = [i[0], i[1], "Carro", i[2], i[3], "R$" + 0.00 , i[4]]
+                    var date = new Date(i[2]);
+                    console.log(date.getDate());
+                    var new_row = [i[0], i[1], "Carro", date.toString().split(' GMT')[0], i[3], "R$" + 0.00 , i[4]]
                     var count = 0;
                     new_row.forEach(element => {
                             var cell = row.insertCell(count);
@@ -149,10 +183,12 @@
         }
 
         function generateId (numberRows) {
-            return "000" + numberRows;
+            return uuid();
         }
 
         async function entrance(){
+            
+            //console.log(uuid());
             
             var generate_random_license = document.getElementsByName("random-license-input");
             var response = validate_request(generate_random_license);

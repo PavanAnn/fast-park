@@ -2,7 +2,7 @@
     <head>
         <title>Página de Login</title>
         <meta charset="UTF-8">
-        <link rel='stylesheet' href="home.css">
+        <link rel='stylesheet' href="register.css">
     </head>
     
     <body>
@@ -18,8 +18,8 @@
                 <input type="password" id="password" class="submit_text" />
             </div>
             <br>
-            <input type="button" class="button1" onclick={validate()} value="Login"/>
-            <input type="button" class="button1" onclick={register()} value="Cadastro"/>
+            <input type="button" class="button1" onclick={login()} value="Login"/>
+            <input type="button" class="button1" onclick={validate()} value="Cadastro"/>
         </form>
 
 
@@ -27,6 +27,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
 
     <script>
+        async function createOperator(user, password) {
+            var res;
+            await axios.post('http://localhost:3000/operator', { params: {id: user, password: password} })
+                .then(response => { res = response.data;} )
+                .catch(error => console.log(error));
+            return res;
+        }
+
         async function getFromDatabse() {
             var res;
             await axios.get('http://localhost:3000/operators')
@@ -35,33 +43,31 @@
             return res;
         }
 
-        function register() {
-            window.location.href="register.html";
+        function login() {
+            window.location.href="home.html";
         }
 
-        async function validate(){
-            const operators = await getFromDatabse();            
+        async function validate(){        
             
-            //console.log( operators );
-
-            //var alloperators = app.selectAllOperators();
-            //alloperators.then( function(result) {
-            //    alert(result);
-            //});
             var username = document.getElementById("username").value;
             var password = document.getElementById("password").value;
+            
+            const operators = await getFromDatabse();         
             
             var exists = 0;
             operators.forEach( (i) => {
                 if(username == i[0] && password == i[1]){
                     exists = 1;
+                    alert("Usuário já está cadastrado! Redirecionando para página principal...")
                     location.href = "panel.html"
                     return;
                 }
                 
             });
-            if ( exists == 0 )
-                alert("Credenciais inválidas");
+            if ( exists == 0 ) {
+                const response = await createOperator(username, password);   
+                console.log(response);
+            }
             
         }
     </script>

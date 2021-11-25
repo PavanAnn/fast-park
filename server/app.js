@@ -15,6 +15,7 @@ module.exports = () => {
 
   app.route('/operators').get(controllerOperators.getOperators);
   app.route('/operator').get(controllerOperators.getOperatorById);
+  app.route('/operator').post(controllerOperators.createOperator)
 
   app.route('/registers').get(controllerRegisters.getRegisters);
   app.route('/register').post(controllerRegisters.createRegister);

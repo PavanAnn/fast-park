@@ -11,7 +11,7 @@ module.exports = () => {
         console.log(result); };
 
     controller.createRegister = async(req, res) => { 
-        res.setHeader('Access-Control-Allow-Origin', request_origin); 
+        res.setHeader('Access-Control-Allow-Origin', req.get('origin')); 
         const result = await bd.insertRegister(req); 
         res.status(200).json(result); 
         console.log(result); };

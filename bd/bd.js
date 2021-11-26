@@ -1,15 +1,15 @@
 //const express = require('express')
 const oracledb = require('oracledb');
-var password = 'oracle123';
+var password = 'Abc123456789';
 
 //OPERATORS
 exports.selectAllOperators = async() => {
   var result;
   try {
     connection = await oracledb.getConnection({
-      user: "system",
-      password: password,
-      connectString: "localhost:1521/xe"
+      user: "ADMIN",
+      password: password, //1522
+      connectString: "adb.sa-saopaulo-1.oraclecloud.com:1522/fastpark_high"
     });
 
     console.log('connected to database');

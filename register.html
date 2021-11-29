@@ -7,19 +7,22 @@
     
     <body>
 
+
+
+        <header class="header">Registro</header>
         <form class="login " action="">
             <div>
-                <label for="">Usuário</label>
+                <label for="">Nome do Usuário</label>
                 <input type="text" id="username" class="submit_text"/>
             </div>
             <br>
             <div>
-                <label for="" class="passwd">Senha</label>
+                <label for="" class="passwd">Senha do Usuário</label>
                 <input type="password" id="password" class="submit_text" />
             </div>
             <br>
-            <input type="button" class="button1" onclick={login()} value="Login"/>
-            <input type="button" class="button1" onclick={validate()} value="Cadastro"/>
+            <input type="button" class="button1" onclick={validate()} value="Cadastrar"/>
+            <input type="button" class="button1 buttonlogin" onclick={login()} value="Login"/>
         </form>
 
 

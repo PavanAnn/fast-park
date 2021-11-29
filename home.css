@@ -1,21 +1,21 @@
 body{
-    background-image: url("/images/background-clean.png");
+    background-image: url("./images/background-clean.png");
     height: 100%;
     background-size:  cover;
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: normal;
 }
 
 
 .login{
     background-color: rgb(255, 255, 255);
     margin: auto;
-    margin-top: 4%;
+    margin-top: 1%;
     width: 15%;
     height: 40%;
     border-radius: 5%;
 
-    font-family: 'Roboto', sans-serif;
-    font-style: normal;
-    font-weight: normal;
     font-size: 15px;
     line-height: 28px;
     color: #000000;
@@ -25,8 +25,6 @@ body{
     align-items: center;
     text-align: left;
 }
-
-
 
 
 .submit_text{
@@ -45,14 +43,31 @@ body{
     background-color: rgb(54, 141, 212);
     color: white;
     height: 40px;
-    margin: 30px 0;
+    margin-top: 40px;
     border: none;
     cursor: pointer;
-    width: 35%;
+    width: 100%;
     font-weight: bold;
     float: right;
 }
 
 button:hover {
     opacity: 0.1;
+}
+
+.header {
+    text-align: center;
+    margin: auto;
+    width: 50%;
+    font-size: 32px;
+    padding-top: 70px;
+}
+
+.buttonlogin {
+    background-color: rgb(255, 102, 0);
+}
+
+.button1:hover{
+    cursor: pointer;
+    filter: brightness(120%);
 }

@@ -199,6 +199,7 @@
             var entrance_license;
             if (!response.entrance_license)
                 entrance_license = generate_license();
+            else entrance_license = document.getElementById("entrance_license").value.toUpperCase();
             var sem_parar = response.sem_parar;
             var tipo = response.tipo;
 
@@ -263,6 +264,18 @@
             alert("Apagando os dados...")
         }
 
+        function updateAutoLicenseCheck() {
+            var checkBox = document.getElementById("yes_check");
+            var textBox = document.getElementById("entrance_license");
+
+            if(checkBox.checked == true) {
+                textBox.disabled = true;
+            }
+            else {
+                textBox.disabled = false;
+            }
+        }
+        
     </script>
 
 
@@ -270,14 +283,14 @@
 
         <div >
             <h2 class="placa_veiculo_title">Placa do veículo</h2>
-            <input id="entrance_license" class="round_font"/>
+            <input id="entrance_license" class="round_font" disabled/>
         </div>
 
         <div class="border">
             <h3>Gerada automaticamente?</h3> 
             
-            <input class="checkboxes " type="radio" name="random-license-input" value="Sim">Sim
-            <input class="checkboxes " type="radio" name="random-license-input" value="Não">Não
+            <input id="yes_check" class="checkboxes " type="radio" name="random-license-input" value="Sim" onclick="updateAutoLicenseCheck()" checked>Sim
+            <input id="no_check" class="checkboxes " type="radio" name="random-license-input" value="Não" onclick="updateAutoLicenseCheck()">Não
         </div>
             
         
@@ -285,23 +298,25 @@
         <div>
             <h3>Possui sem parar?</h3>
             <input class="checkboxes" type="radio" name="sem-parar-input" value="Sim">Sim
-            <input class="checkboxes" type="radio" name="sem-parar-input" value="Não">Não
+            <input class="checkboxes" type="radio" name="sem-parar-input" value="Não" checked>Não
         </div>
 
         <div>
-            <input class="checkboxes" type="radio" name="type-input" value="Carro">Carro
+            <input class="checkboxes" type="radio" name="type-input" value="Carro" checked>Carro
             <input class="checkboxes" type="radio" name="type-input" value="Moto">Moto
         </div>
 
 
         <div class="panel">
             <button class="round_font" id="btn_entrance" onclick="entrance()">Entrada de veículo</button>
-            <h4>Tela do Leo</h4>
+            <h4>Precisa de ajuda?<br>
+                <button id="btn_help" onclick="alert('Ajuda chamada!')">Chamar ajuda</button>
+            </h4>
         </div>
 
         <div>
-            <h2>Placa do veículo</h2>
-            <input id="exit_license"/>
+            <h2 class="placa_veiculo_title">Placa do veículo</h2>
+            <input id="exit_license" class="round_font"/>
 
         </div>
 
@@ -309,7 +324,9 @@
             
             <button class="round_font" id="btn_exit" onclick="exit()">Saída de veículo</button>
 
-            <h4>Tela do Leo</h1>
+            <h4>Precisa de ajuda?<br>
+                <button id="btn_help" onclick="alert('Ajuda chamada!')">Chamar ajuda</button>
+            </h4>
         </div>
 
         <div> <!-- Mover para algum lugar entre a Entrada e a Saida  -->

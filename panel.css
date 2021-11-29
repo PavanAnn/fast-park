@@ -1,6 +1,7 @@
 body{
     background-image: url("/images/background-clean.png");
     background-size:  cover;
+    font-family: Verdana, sans-serif;;
 }
 
 
@@ -36,8 +37,9 @@ thead{
 .control .panel h4{
     background-color: rgba(105, 99, 99, 0.336);
     height: 8rem;
+    text-align: center;
+    margin-top: 10px;
 }
-
 
 button:hover{
     cursor: pointer;
@@ -61,6 +63,14 @@ button:hover{
 
 #btn_erase_data{
     background-color: rgb(223, 0, 0);
+}
+
+#btn_help {
+    border-radius: 10px;
+    font-size: 18px;
+    background-color: rgb(65, 0, 0);
+    margin-bottom: 10px;
+    width: 200px;
 }
 
 .btn_payment{

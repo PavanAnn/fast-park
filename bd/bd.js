@@ -1,15 +1,17 @@
 //const express = require('express')
 const oracledb = require('oracledb');
-var password = 'Abc123456789';
-
+//oracledb.initOracleClient({ libDir: "C:\\Users\\Cliente Preferencial\\Documents\\instantclient_19_6" });
+//connection = await oracledb.getConnection({ user: "admin", password: "XXXX", connectionString: "XXX_high" });
+var password = 'oracle123';
+//https://blogs.oracle.com/opal/post/how-to-connect-to-oracle-autonomous-cloud-databases
 //OPERATORS
 exports.selectAllOperators = async() => {
   var result;
   try {
     connection = await oracledb.getConnection({
-      user: "ADMIN",
-      password: password, //1522
-      connectString: "adb.sa-saopaulo-1.oraclecloud.com:1522/fastpark_high"
+      user: "system",
+      password: password, 
+      connectString: "localhost:1521/xe"
     });
 
     console.log('connected to database');
@@ -114,7 +116,7 @@ exports.selectAllActiveRegisters = async(req) => {
 
     console.log('connected to database');
     // run query to get all employees
-    result = await connection.execute(`SELECT * FROM entrance`);// where entrance_time>='(:entrance_time)'`, [req.entrance_time]);
+    result = await connection.execute(`SELECT * FROM entrance where entrance_time>='(:entrance_time)'`, [req.entrance_time]);
 
   } catch (err) {
     //send error message

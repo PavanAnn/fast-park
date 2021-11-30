@@ -116,7 +116,8 @@ exports.selectAllActiveRegisters = async(req) => {
 
     console.log('connected to database');
     // run query to get all employees
-    result = await connection.execute(`SELECT * FROM entrance where entrance_time>='(:entrance_time)'`, [req.entrance_time]);
+    result = await connection.execute(`SELECT * FROM entrance where exit_time is null`);// where entrance_time>=:entrance_time`, [req.query.entrance_time]);
+    console.log(result)
 
   } catch (err) {
     //send error message
@@ -151,10 +152,12 @@ exports.insertRegister = async (req) => {
       password: password,
       connectString: "localhost:1521/xe"
     });
+    console.log(req.query)
     result = await connection.execute(`insert into entrance (id, license_plate, entrance_type) values (:id, :license, :entrance_type)`, [req.query.id, req.query.license, req.query.entrance_type]);
 
   } catch (err) {
     //send error message
+    console.log(err.message);
     return err.message;
   } finally {
     if (connection) {

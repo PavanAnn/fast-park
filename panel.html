@@ -27,8 +27,8 @@
 
         async function getActiveRegisters() {
             var date_now = new Date();
-            var formatted_date = date_now.getFullYear() + '-' + date_now.getMonth() + '-' + date_now.getDay() + 'T' + date_now.getHours() + ':' + date_now.getMinutes() + ':' + date_now.getSeconds() + '.' + date_now.getMilliseconds() + 'Z';
-            console.log(formatted_date)
+            var formatted_date = date_now.getDay() + '/' + date_now.getMonth() + '/' + date_now.getFullYear().toString()[2] + date_now.getFullYear().toString()[3] + ' ' + date_now.getHours() + ':' + date_now.getMinutes() + ':' + date_now.getSeconds() + ',' + date_now.getMilliseconds();
+            console.log(formatted_date) 
             var res;
             await axios.get('http://localhost:3000/registers', { params: {entrance_time: formatted_date} })
                 .then(response => { res = response.data;} )
@@ -118,8 +118,7 @@
             result = await  getActiveRegisters();
             console.log(result);
             
-            
-            if (result) {
+            if (result != "Response is undefined") {
                 result.forEach( (i) => {
                     //alert(i[1]);
                     var table = document.getElementById("my_table");
@@ -138,7 +137,7 @@
                         });
                     
                 });
-            }            
+            } else alert("Erro ao buscar dados no banco de dados");  
         }
 
         async function showPaymentValue () {

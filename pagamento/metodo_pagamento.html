@@ -8,13 +8,44 @@
 <body onload="showPaymentValue()">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
     <script>
-        async function getPaymentValue ( entrance_id ) {
+        async function getRegisters() {
             var res;
-            await axios.get('http://localhost:3000/payment',  { params: {entrance_id: entrance_id} })
+            await axios.get('http://localhost:3000/registers', { params: {active: false} })
                 .then(response => { res = response.data;} )
                 .catch(error => console.log(error));
             return res;
         }
+
+        async function getPaymentValue ( id ) {
+            var res;
+            await axios.get('http://localhost:3000/payment',  { params: {entrance_id: id} })
+                .then(response => { res = response.data;} )
+                .catch(error => console.log(error));
+            return res;
+        }
+
+        async function alreadyPaid(license) { //1 se ta no estacionamento; 2 se ja pagou; 3 se nao esta no estacionamento
+            result = await getRegisters ();
+            achou = false;
+            response = null;
+            if (result != "Response is undefined") {
+                result.forEach( (i) => {
+                    if ( i[1] == license) {
+                        achou = true;
+                        if (!i[3]) { //se exit_time é nulo, não saiu ainda
+                            response = i[0]
+                        }
+                    }
+                });
+
+                if (!achou) {
+                    alert("Veiculo com placa [" + license + "] nao esta no estacionamento")
+                    return 3
+                } else return response
+            } else alert("Erro ao buscar dados no banco de dados");  
+        }
+
+
         var already_searched = 0;
 
         async function showPaymentValue () {
@@ -24,19 +55,24 @@
                 sURLVariables = sPageURL.split('='),
                 sParameterName,
                 i;
-                alert(sURLVariables[1]);  
-                payment_value = await getPaymentValue( sURLVariables[1] );
-                document.getElementById("payment_value").innerHTML = "R$ " + payment_value;
-                if (payment_value == 'query send no rows') {
-                        alert("Registro com placa fornecida não foi encontrado")
+                alreay_paid_res = await alreadyPaid(sURLVariables[1])
+                
+                if (alreay_paid_res == 2) {
+                    alert("Veiculo ja pagou")
+                } else if (alreay_paid_res != 3) {
+                    payment_value = await getPaymentValue( alreay_paid_res );
+                    document.getElementById("payment_value").innerHTML = "R$ " + payment_value;
+                    if (payment_value == 'query send no rows') {
+                            alert("Registro com placa fornecida não foi encontrado")
+                    }
+                    else if ( payment_value == 'Response is undefined') {
+                        alert("Erro ao buscar registro")
+                        document.getElementById("payment_value").innerHTML = "R$ 5,99";
+                    } 
+                    else
+                        document.getElementById("payment_value").innerHTML = "R$ " + (payment_value[0][3]).toString().substring(0,5); //idpagamento,idteste,CARTAO,20.990000000000002,2021-11-20T22:27:32.890Z
+                    }
                 }
-                else if ( payment_value == 'Response is undefined') {
-                    alert("Erro ao buscar registro")
-                    document.getElementById("payment_value").innerHTML = "R$ 5,99";
-                } 
-                else
-                    document.getElementById("payment_value").innerHTML = "R$ " + (payment_value[0][3]).toString().substring(0,5); //idpagamento,idteste,CARTAO,20.990000000000002,2021-11-20T22:27:32.890Z
-            }
         }
 
         function redirect(type) {

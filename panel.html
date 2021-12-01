@@ -30,7 +30,7 @@
             var formatted_date = date_now.getDay() + '/' + date_now.getMonth() + '/' + date_now.getFullYear().toString()[2] + date_now.getFullYear().toString()[3] + ' ' + date_now.getHours() + ':' + date_now.getMinutes() + ':' + date_now.getSeconds() + ',' + date_now.getMilliseconds();
             console.log(formatted_date) 
             var res;
-            await axios.get('http://localhost:3000/registers', { params: {entrance_time: formatted_date} })
+            await axios.get('http://localhost:3000/registers', { params: {active: true} })
                 .then(response => { res = response.data;} )
                 .catch(error => console.log(error));
             return res;

@@ -1,5 +1,6 @@
 //const express = require('express')
 const oracledb = require('oracledb');
+oracledb.autoCommit = true;
 //oracledb.initOracleClient({ libDir: "C:\\Users\\Cliente Preferencial\\Documents\\instantclient_19_6" });
 //connection = await oracledb.getConnection({ user: "admin", password: "XXXX", connectionString: "XXX_high" });
 var password = 'oracle123';
@@ -115,8 +116,8 @@ exports.selectAllActiveRegisters = async(req) => {
     });
 
     console.log('connected to database');
-    // run query to get all employees
-    result = await connection.execute(`SELECT * FROM entrance where exit_time is null`);// where entrance_time>=:entrance_time`, [req.query.entrance_time]);
+    if (req.query.active) result = await connection.execute(`SELECT * FROM entrance where exit_time is null`);// where entrance_time>=:entrance_time`, [req.query.entrance_time]);
+    else result = await connection.execute(`SELECT * FROM entrance`);
     console.log(result)
 
   } catch (err) {
@@ -153,7 +154,7 @@ exports.insertRegister = async (req) => {
       connectString: "localhost:1521/xe"
     });
     console.log(req.query)
-    result = await connection.execute(`insert into entrance (id, license_plate, entrance_type) values (:id, :license, :entrance_type)`, [req.query.id, req.query.license, req.query.entrance_type]);
+    result = await connection.execute(`insert into entrance (id, license_plate, exit_time,  entrance_type) values (:id, :license, :exit_time, :entrance_type)`, [req.query.id, req.query.license, null, req.query.entrance_type]);
 
   } catch (err) {
     //send error message
@@ -164,6 +165,7 @@ exports.insertRegister = async (req) => {
       try {
         // Always close connections
         await connection.close(); 
+        console.log('close connection success');
       } catch (err) {
         return console.error(err.message);
       }
@@ -192,6 +194,7 @@ exports.updateRegister = async (req) => {
       try {
         // Always close connections
         await connection.close(); 
+        console.log('close connection success');
       } catch (err) {
         return console.error(err.message);
       }
@@ -248,8 +251,8 @@ exports.selectPaymentByEntranceId = async (req) => {
       password: password,
       connectString: "localhost:1521/xe"
     });
-    // run query to get employee with employee_id
-    result = await connection.execute(`SELECT * FROM payment where entrance_id=:entrance_id`, [req.query.entrance_id]); //
+    console.log(req.query.entrance_id)
+    result = await connection.execute(`SELECT * FROM payment where entrance_id=:entrance_id`, [req.query.entrance_id]);
 
   } catch (err) {
     //send error message
@@ -259,6 +262,7 @@ exports.selectPaymentByEntranceId = async (req) => {
       try {
         // Always close connections
         await connection.close(); 
+        console.log('close connection success');
       } catch (err) {
         return console.error(err.message);
       }
@@ -294,6 +298,7 @@ exports.insertPayment = async (req) => {
       try {
         // Always close connections
         await connection.close(); 
+        console.log('close connection success');
       } catch (err) {
         return console.error(err.message);
       }

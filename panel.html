@@ -10,8 +10,22 @@
     
     <script >
         async function insertRegister(id, license, entrance_type) {
+            var paramgroup = {
+                    id: id,
+                    license_plate: license,
+                    exit_time: null,
+                    entrance_type: entrance_type
+            };
             var res;
-            await axios.post('http://localhost:3000/register',  { params: {id: id, license: license, entrance_type: entrance_type} })
+            await axios.post('http://localhost:3000/register', null, { params:  paramgroup })
+                .then(response => { res = response.data;} )
+                .catch(error => console.log(error));
+            return res;
+        }
+
+        async function insertPayment(id, entrance_id, payment_type, payment_value) {
+            var res;
+            await axios.post('http://localhost:3000/payment', null,  { params: {id: id, entrance_id: entrance_id, payment_type: payment_type, payment_value: payment_value} })
                 .then(response => { res = response.data;} )
                 .catch(error => console.log(error));
             return res;
@@ -25,10 +39,18 @@
             return res;
         }
 
+        async function updatePayment(id, entrance_id, payment_type, payment_value) {
+            var res;
+            await axios.patch('http://localhost:3000/payment', null,  { params: {id: id, entrance_id: entrance_id, payment_type: payment_type, payment_value: payment_value} })
+                .then(response => { res = response.data;} )
+                .catch(error => console.log(error));
+            return res;
+        }
+
         async function getActiveRegisters() {
-            var date_now = new Date();
-            var formatted_date = date_now.getDay() + '/' + date_now.getMonth() + '/' + date_now.getFullYear().toString()[2] + date_now.getFullYear().toString()[3] + ' ' + date_now.getHours() + ':' + date_now.getMinutes() + ':' + date_now.getSeconds() + ',' + date_now.getMilliseconds();
-            console.log(formatted_date) 
+            //var date_now = new Date();
+            //var formatted_date = date_now.getDay() + '/' + date_now.getMonth() + '/' + date_now.getFullYear().toString()[2] + date_now.getFullYear().toString()[3] + ' ' + date_now.getHours() + ':' + date_now.getMinutes() + ':' + date_now.getSeconds() + ',' + date_now.getMilliseconds();
+            //console.log(formatted_date) 
             var res;
             await axios.get('http://localhost:3000/registers', { params: {active: true} })
                 .then(response => { res = response.data;} )
@@ -44,14 +66,15 @@
             return res;
         }
 
-        function get_total_a_pagar (tempo, vip) {
+        function calculaValorAPagar (current_value, entrance_time, vip) {
             var taxa_vip = 4;
             var taxa_tempo = 3;
             var intervalo = 20;
             try {
                 var date_now = new Date();
-                var tempo_total = date_now.getHours() + (date_now.getMinutes()/intervalo) - tempo.getHours() + (tempo.getMinutes()/intervalo);
+                var tempo_total = date_now.getHours() + (date_now.getMinutes()/intervalo) - entrance_time.getHours() + (entrance_time.getMinutes()/intervalo);
                 
+                alert("Horas " + tempo_total)
                 var preco_total;
 
                 if (vip != 0)
@@ -128,7 +151,7 @@
                     payment_value = 0.00
                     var date = new Date(i[2]);
                     console.log(date.getDate());
-                    var new_row = [i[0], i[1], "Carro", date.toString().split(' GMT')[0], i[3], "R$" + 0.00 , i[4]]
+                    var new_row = [i[0], i[1], date.toString().split(' GMT')[0], i[3], "R$" + 0.00 , i[4]]
                     var count = 0;
                     new_row.forEach(element => {
                             var cell = row.insertCell(count);
@@ -148,7 +171,9 @@
                     
                     for (var i = 1; i < numberRows; i++) {
                         var value_to_pay =  await getTotalAPagar(table.rows[i].cells[0].innerHTML);
-                        table.rows[i].cells[5].innerHTML = "R$ " + (value_to_pay[0][3]).toString().substring(0,5);
+                        if (value_to_pay == 'query send no rows') { value_to_pay =  calculaValorAPagar(0, table.rows[i].cells[2].innerHTML); await insertPayment(uuid(), table.rows[i].cells[0].innerHTML, null, value_to_pay, table.rows[i].cells[5].innerHTML ) ;}
+                        
+                        table.rows[i].cells[4].innerHTML = "R$ " + (value_to_pay[0][3]).toString().substring(0,5);
                     }
 
                 } catch (err) { console.log(err) }
@@ -177,6 +202,17 @@
             if (inputs_type[0].checked ) { tipo = inputs_type[0].value; }
             else if (inputs_type[1].checked ) { tipo = inputs_type[1].value; }
             else { alert ("Selecione um tipo de veículo"); return  null}
+
+            //CCSP
+            //CSSP
+            //MSSP
+            
+            if (inputs_type[0].checked) { //Carro
+                if (inputs_sem_parar[0].checked) tipo = 'CCSP';
+                else tipo = 'CSSP';
+            } else {
+                tipo = 'MSSP'
+            }
 
             return {"entrance_license": entrance_license, "sem_parar": sem_parar, "tipo": tipo};
         }
@@ -214,7 +250,7 @@
                 date_later.setHours(date_now.getHours() + 2);
                 var id = generateId(numberRows);
 
-                var new_row = [id, entrance_license, tipo, date_now.toString().split(' GMT')[0], "NULL", " " + get_total_a_pagar(date_later, sem_parar) , sem_parar];
+                var new_row = [id, entrance_license, date_now.toString().split(' GMT')[0], "NULL", " " + calculaValorAPagar(date_later, sem_parar) , tipo];
 
                 var count = 0;
 
@@ -343,7 +379,6 @@
         <tr>
             <th>#</th>
             <th>Placa</th>
-            <th>Tipo</th>
             <th>Entrada</th>
             <th>Pagamento</th>
             <th>Total a pagar</th>

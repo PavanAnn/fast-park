@@ -45,7 +45,13 @@
             } else alert("Erro ao buscar dados no banco de dados");  
         }
 
-
+        async function createPayment(id, entrance_id, payment_type, payment_value) {
+            var res;
+            await axios.post('http://localhost:3000/payment', null,  { params: {id: id, entrance_id: entrance_id, payment_type: payment_type, payment_value: payment_value} })
+                .then(response => { res = response.data;} )
+                .catch(error => console.log(error));
+            return res;
+        }
         var already_searched = 0;
 
         async function showPaymentValue () {

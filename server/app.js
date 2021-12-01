@@ -1,8 +1,8 @@
 const express    = require('express');
-
+var cors = require('cors')
 module.exports = () => {
   const app = express();
-
+  app.use(cors())
   // SETANDO VARIÁVEIS DA APLICAÇÃO
   app.set('port', process.env.PORT || 3000);
 

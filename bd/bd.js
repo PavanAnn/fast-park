@@ -85,7 +85,7 @@ exports.createOperator = async (data) => {
       connectString: "localhost:1521/xe"
     });
     // run query to get employee with employee_id
-    result = await connection.execute(`insert into operators values (:id, :password)`, [data.id, data.password]);
+    result = await connection.execute(`insert into operators values (:id, :password)`, [data.query.id, data.query.password]);
 
   } catch (err) {
     //send error message
@@ -147,14 +147,14 @@ exports.selectAllActiveRegisters = async(req) => {
 
 exports.insertRegister = async (req) => {
   var result;
+  console.log("aqui: " + req.query.id)
   try {
     connection = await oracledb.getConnection({
       user: "system",
       password: password,
       connectString: "localhost:1521/xe"
     });
-    console.log(req.query)
-    result = await connection.execute(`insert into entrance (id, license_plate, exit_time,  entrance_type) values (:id, :license, :exit_time, :entrance_type)`, [req.query.id, req.query.license, null, req.query.entrance_type]);
+    result = await connection.execute(`insert into entrance (id, license_plate, exit_time,  entrance_type) values (:id, :license_plate, :exit_time, :entrance_type)`, [req.query.id, req.query.license_plate, req.query.exit_time, req.query.entrance_type]);
 
   } catch (err) {
     //send error message

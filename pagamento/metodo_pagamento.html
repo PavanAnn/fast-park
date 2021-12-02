@@ -33,16 +33,17 @@
                     if ( i[1] == license) {
                         achou = true;
                         if (!i[3]) { //se exit_time é nulo, não saiu ainda
-                            response = i[0]
+                            response = i[4] //pega valor a pagar da tabela entrance
+                            alert(i[4])
                         }
                     }
                 });
 
                 if (!achou) {
                     alert("Veiculo com placa [" + license + "] nao esta no estacionamento")
-                    return 3
+                    return -1
                 } else return response
-            } else alert("Erro ao buscar dados no banco de dados");  
+            } else { alert("Erro ao buscar dados no banco de dados")};  
         }
 
         async function createPayment(id, entrance_id, payment_type, payment_value) {
@@ -57,26 +58,27 @@
         async function showPaymentValue () {
             if (already_searched == 0) {
                 already_searched = 1;
+
                 var sPageURL = window.location.search.substring(1),
                 sURLVariables = sPageURL.split('='),
                 sParameterName,
                 i;
-                alreay_paid_res = await alreadyPaid(sURLVariables[1])
+                value_to_pay = await alreadyPaid(sURLVariables[1])//pega valor a pagar no momento com base na placa
                 
-                if (alreay_paid_res == 2) {
+                if (value_to_pay == 0) {
                     alert("Veiculo ja pagou")
-                } else if (alreay_paid_res != 3) {
-                    payment_value = await getPaymentValue( alreay_paid_res );
-                    document.getElementById("payment_value").innerHTML = "R$ " + payment_value;
-                    if (payment_value == 'query send no rows') {
+                } else if (value_to_pay != -1) {
+                    //payment_value = await getPaymentValue( alreay_paid_res );
+                   // document.getElementById("payment_value").innerHTML = "R$ " + payment_value;
+                    /*if (payment_value == 'query send no rows') {
                             alert("Registro com placa fornecida não foi encontrado")
                     }
                     else if ( payment_value == 'Response is undefined') {
                         alert("Erro ao buscar registro")
                         document.getElementById("payment_value").innerHTML = "R$ 5,99";
-                    } 
-                    else
-                        document.getElementById("payment_value").innerHTML = "R$ " + (payment_value[0][3]).toString().substring(0,5); //idpagamento,idteste,CARTAO,20.990000000000002,2021-11-20T22:27:32.890Z
+                    } */
+                    //else
+                        document.getElementById("payment_value").innerHTML = "R$ " + value_to_pay//(payment_value[0][3]).toString().substring(0,5); //idpagamento,idteste,CARTAO,20.990000000000002,2021-11-20T22:27:32.890Z
                     }
                 }
         }

@@ -9,11 +9,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
     
     <script >
-        async function insertRegister(id, license, entrance_type) {
+        async function insertRegister(id, license, entrance_type, payment_value) {
             var paramgroup = {
                     id: id,
                     license_plate: license,
                     exit_time: null,
+                    payment_value: payment_value,
                     entrance_type: entrance_type
             };
             var res;
@@ -31,9 +32,19 @@
             return res;
         }
 
-        async function updateRegister(license, exit_time, entrance_time) {
+        async function updatePaymentValueRegister(license, entrance_time, payment_value) {
             var res;
-            await axios.patch('http://localhost:3000/register',  { params: {exit_time: exit_time, license: license, entrance_time: entrance_time} })
+            var formatted_date = entrance_time.getDay() + '/' + entrance_time.getMonth() + '/' + entrance_time.getFullYear().toString()[2] + entrance_time.getFullYear().toString()[3] + ' ' + entrance_time.getHours() + ':' + entrance_time.getMinutes() + ':' + entrance_time.getSeconds() + ',' + entrance_time.getMilliseconds();
+            console.log(formatted_date) 
+            await axios.patch('http://localhost:3000/register',  { params: {updateExit: false, license: license, entrance_time: entrance_time, payment_value: payment_value} })
+                .then(response => { res = response.data;} )
+                .catch(error => console.log(error));
+            return res;
+        }
+
+        async function updateExitRegister(license, exit_time, entrance_time, payment_value) {
+            var res;
+            await axios.patch('http://localhost:3000/register', null, { params: {updateExit: true, exit_time: exit_time, license: license, entrance_time: entrance_time, payment_value: payment_value} })
                 .then(response => { res = response.data;} )
                 .catch(error => console.log(error));
             return res;
@@ -74,14 +85,17 @@
                 var date_now = new Date();
                 var tempo_entrance_time = entrance_time.toString().split(' ')[4]
                 var date_then = new Date(); date_then.setTime(parseInt(tempo_entrance_time))
-                var tempo_total = (date_now.getHours() - date_then.getTime())/intervalo
+                
+                alert(date_now.getHours() + " " + date_then.getHours())
+                var tempo_total = (date_then.getTime() - date_now.getHours())
+                
                 var preco_total;
 
-                if (vip != 0)
+                if (vip != 'Não')
                     preco_total = taxa_tempo*tempo_total + taxa_vip;
                 else
                     preco_total = taxa_tempo*tempo_total;
-
+                alert(preco_total)
                //Formatar preço com padrões pr-br      
                 var preco_total_formatado = preco_total.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});    
                 return preco_total_formatado;
@@ -151,7 +165,7 @@
                     payment_value = 0.00
                     var date = new Date(i[2]);
                     console.log(date.getDate());
-                    var new_row = [i[0], i[1], date.toString().split(' GMT')[0], i[3], "R$" + 0.00 , i[4]]
+                    var new_row = [i[0], i[1], date.toString().split(' GMT')[0], i[3], "R$" + i[4] , i[5]]
                     var count = 0;
                     new_row.forEach(element => {
                             var cell = row.insertCell(count);
@@ -164,22 +178,18 @@
         }
 
         async function showPaymentValue () {
-            
+            //pegar e atualizar valor a pagar na tabela entrance
             try {
                     var table = document.getElementById("my_table");
                     var numberRows = table.rows.length;
                     
                     for (var i = 1; i < numberRows; i++) {
-                        var value_to_pay =  await getTotalAPagar(table.rows[i].cells[0].innerHTML);
-                        if (value_to_pay == 'query send no rows') { 
-                            console.log(value_to_pay)
-                            value_to_pay =  calculaValorAPagar(0, table.rows[i].cells[2].innerHTML).toString().substring(2,7).replace(',', '.')
-                            console.log(value_to_pay)
-                            //alert(table.rows[i].cells[0].innerHTML + " " + value_to_pay + " " + table.rows[i].cells[5].innerHTML)
-                            var result = await insertPayment(uuid(), table.rows[i].cells[0].innerHTML, value_to_pay, table.rows[i].cells[5].innerHTML )
-                            //alert("Meu result " + result)
-                        }
-                        table.rows[i].cells[4].innerHTML = "R$ " + (value_to_pay[0][3]).toString().substring(0,5);
+                        var value_to_pay =  calculaValorAPagar(0, table.rows[i].cells[2].innerHTML).toString().substring(2,7).replace(',', '.')
+                        console.log(value_to_pay)
+                        //temos que atualizar o valor a ser pago na tabela entrance
+                        alert(value_to_pay)
+                        await updatePaymentValueRegister(table.rows[i].cells[0].innerHTML, null, table.rows[i].cells[2].innerHTML, value_to_pay )
+                        table.rows[i].cells[4].innerHTML = "R$ " + value_to_pay;
                     }
 
                 } catch (err) { console.log(err) }
@@ -255,8 +265,8 @@
                 var date_later = new Date();
                 date_later.setHours(date_now.getHours() + 2);
                 var id = generateId(numberRows);
-
-                var new_row = [id, entrance_license, date_now.toString().split(' GMT')[0], "NULL", " " + calculaValorAPagar(date_later, sem_parar) , tipo];
+                var valor_a_pagar = calculaValorAPagar(0, date_later, sem_parar)
+                var new_row = [id, entrance_license, date_now.toString().split(' GMT')[0], "NULL", valor_a_pagar , tipo];
 
                 var count = 0;
 
@@ -265,8 +275,8 @@
                     cell.innerHTML = element;
                     count++;
                 });
-
-                await insertRegister(id, entrance_license, tipo);
+                alert(valor_a_pagar + " " + valor_a_pagar.toString().substring(3,5))
+                await insertRegister(id, entrance_license, tipo, valor_a_pagar.toString().substring(3,5));
             }
                 
         }
@@ -281,21 +291,37 @@
                 var numberRows = table.rows.length - 1;
                 var count = 1;
                 var deleted = 0;
+                var linha = -1;
                 var entrance_time;
+                
+                var value_to_pay = 0;
 
                 for (var i = 0; i < table.rows.length; i++) {
                     if ( table.rows.item(i).cells.item(1).innerHTML == exit_license) {
-                        entrance_time = table.rows.item(i).cells.item(3);
-                        document.getElementById("my_table").deleteRow(i);
                         deleted = 1;
+                        entrance_time = table.rows.item(i).cells.item(2).innerHTML;
+                        value_to_pay = table.rows.item(i).cells.item(4).innerHTML;
+                        linha = i;
                     }
                 }
 
                 if (deleted == 0) {
                     alert("Nenhum registro foi encontrado com a placa fornecida")
-                } else {
-                    
-                    await updateRegister(exit_license, new Date(), entrance_time);
+                } else {//se pagou tudo ha menos de 20min
+                    if ( value_to_pay != 0 )
+                    {
+                        alert("Vai pagar")
+                        //se ja passou 20min
+                        //date_now = new Date();
+                        //alert(ja_pagou.toString().substring(5,9))
+                       // date_then = new Date().setTime(ja_pagou.toString().substring(5,9))
+                       // document.getElementById("my_table").deleteRow(i);
+                        //await updateRegister(exit_license, new Date(), entrance_time);
+                    }else {
+                        document.getElementById("my_table").deleteRow(i);
+                        date_now = new Date();
+                        await updateExitRegister(exit_license, date_now, entrance_time); //update na entrance colocando o horario atual para a data de saida
+                    }
                 }
 
             }
@@ -385,9 +411,9 @@
             <th>#</th>
             <th>Placa</th>
             <th>Entrada</th>
-            <th>Pagamento</th>
+            <th>Saída</th>
             <th>Total a pagar</th>
-            <th>SemParar</th>
+            <th>Tipo</th>
         </tr>
         <!--<tbody id="my_table_tbody">
             <tr></tr>

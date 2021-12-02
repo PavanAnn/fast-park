@@ -19,8 +19,11 @@ module.exports = () => {
     };
 
     controller.updateRegister = (req, res) => { 
-        app.setHeader('Access-Control-Allow-Origin', request_origin); 
-        res.status(200).json(bd.updateRegister(req)); };
+        res.setHeader('Access-Control-Allow-Origin', request_origin); 
+        const result = res.status(200).json(bd.updateRegister(req)); 
+        if (result != "Response is undefined") res.status(200).json(result); 
+        else res.status(500).json(result);
+    };
         
     return controller;
 }

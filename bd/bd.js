@@ -152,7 +152,7 @@ exports.insertRegister = async (req) => {
       password: password,
       connectString: "localhost:1521/xe"
     });
-    result = await connection.execute(`insert into entrance (id, license_plate, exit_time,  entrance_type) values (:id, :license_plate, :exit_time, :entrance_type)`, [req.query.id, req.query.license_plate, req.query.exit_time, req.query.entrance_type]);
+    result = await connection.execute(`insert into entrance (id, license_plate, exit_time, payment_value, entrance_type) values (:id, :license_plate, :exit_time, :payment_value, :entrance_type)`, [req.query.id, req.query.license_plate, req.query.exit_time, req.query.payment_value, req.query.entrance_type], { autoCommit: true});
 
   } catch (err) {
     //send error message
@@ -174,16 +174,17 @@ exports.insertRegister = async (req) => {
 }
 
 exports.updateRegister = async (req) => {
-  var result;
+  var result; 
   try {
     connection = await oracledb.getConnection({
       user: "system",
       password: password,
       connectString: "localhost:1521/xe"
-    });
-    // run query to get employee with employee_id
-    result = await connection.execute(`update entrance set exit_time=(:exit_time) where license_plate=(:license) and entrance_time=(:entrance_time);`, [req.query.exit_time, req.query.license, req.query.entrance_time]);
-
+    }); console.log(req.query.entrance_time)
+    if (req.query.updateExit == 0) {  console.log("aqui1")
+      result = await connection.execute(`update entrance set payment_value=(:payment_value) where license_plate=(:license) and entrance_time=(:entrance_time);`, [req.query.payment_value, req.query.license, req.query.entrance_time]);
+      console.log("aqui2")
+    } else result = await connection.execute(`update entrance set exit_time=(:exit_time) where license_plate=(:license) and entrance_time=(:entrance_time);`, [req.query.exit_time, req.query.license, req.query.entrance_time]);
   } catch (err) {
     //send error message
     return err.message;

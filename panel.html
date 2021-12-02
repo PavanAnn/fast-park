@@ -70,11 +70,11 @@
             var taxa_vip = 4;
             var taxa_tempo = 3;
             var intervalo = 20;
-            try {
+            try { 
                 var date_now = new Date();
-                var tempo_total = date_now.getHours() + (date_now.getMinutes()/intervalo) - entrance_time.getHours() + (entrance_time.getMinutes()/intervalo);
-                
-                alert("Horas " + tempo_total)
+                var tempo_entrance_time = entrance_time.toString().split(' ')[4]
+                var date_then = new Date(); date_then.setTime(parseInt(tempo_entrance_time))
+                var tempo_total = (date_now.getHours() - date_then.getTime())/intervalo
                 var preco_total;
 
                 if (vip != 0)
@@ -139,7 +139,7 @@
         {            
             var result;
             result = await  getActiveRegisters();
-            console.log(result);
+            //console.log(result);
             
             if (result != "Response is undefined") {
                 result.forEach( (i) => {
@@ -171,8 +171,13 @@
                     
                     for (var i = 1; i < numberRows; i++) {
                         var value_to_pay =  await getTotalAPagar(table.rows[i].cells[0].innerHTML);
-                        if (value_to_pay == 'query send no rows') { value_to_pay =  calculaValorAPagar(0, table.rows[i].cells[2].innerHTML); await insertPayment(uuid(), table.rows[i].cells[0].innerHTML, null, value_to_pay, table.rows[i].cells[5].innerHTML ) ;}
-                        
+                        if (value_to_pay == 'query send no rows') { 
+                            value_to_pay =  calculaValorAPagar(0, table.rows[i].cells[2].innerHTML)
+                            console.log(value_to_pay.split(2))
+                            alert(table.rows[i].cells[0].innerHTML + " " + value_to_pay + " " + table.rows[i].cells[5].innerHTML)
+                            var result = await insertPayment(uuid(), table.rows[i].cells[0].innerHTML, value_to_pay, table.rows[i].cells[5].innerHTML )
+                            alert("Meu result " + result)
+                        }
                         table.rows[i].cells[4].innerHTML = "R$ " + (value_to_pay[0][3]).toString().substring(0,5);
                     }
 

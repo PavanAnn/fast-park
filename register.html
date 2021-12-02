@@ -32,7 +32,7 @@
     <script>
         async function createOperator(user, password) {
             var res;
-            await axios.post('http://localhost:3000/operator', { params: {id: user, password: password} })
+            await axios.post('http://localhost:3000/operator', null,  { params: {id: user, password: password} })
                 .then(response => { res = response.data;} )
                 .catch(error => console.log(error));
             return res;

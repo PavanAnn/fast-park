@@ -118,7 +118,6 @@ exports.selectAllActiveRegisters = async(req) => {
     console.log('connected to database');
     if (req.query.active) result = await connection.execute(`SELECT * FROM entrance where exit_time is null`);// where entrance_time>=:entrance_time`, [req.query.entrance_time]);
     else result = await connection.execute(`SELECT * FROM entrance`);
-    console.log(result)
 
   } catch (err) {
     //send error message
@@ -147,7 +146,6 @@ exports.selectAllActiveRegisters = async(req) => {
 
 exports.insertRegister = async (req) => {
   var result;
-  console.log("aqui: " + req.query.id)
   try {
     connection = await oracledb.getConnection({
       user: "system",
@@ -251,7 +249,7 @@ exports.selectPaymentByEntranceId = async (req) => {
       password: password,
       connectString: "localhost:1521/xe"
     });
-    console.log(req.query.entrance_id)
+    
     result = await connection.execute(`SELECT * FROM payment where entrance_id=:entrance_id`, [req.query.entrance_id]);
 
   } catch (err) {
@@ -267,7 +265,7 @@ exports.selectPaymentByEntranceId = async (req) => {
         return console.error(err.message);
       }
     }    
-    console.log("Pagamentos: " + result)
+    
     if (!result) return 'Response is undefined';
     if (result.rows.length == 0) {
       //query return zero employees
@@ -280,6 +278,8 @@ exports.selectPaymentByEntranceId = async (req) => {
 }
 
 exports.insertPayment = async (req) => {
+  console.log("cheguei aqui")
+  console.log(req.query.id + " " + req.query.entrance_id + " " + req.query.payment_type + " " + req.query.payment_value)
   var result;
   try {
     connection = await oracledb.getConnection({
@@ -289,7 +289,7 @@ exports.insertPayment = async (req) => {
     });
     // run query to get employee with employee_id
     result = await connection.execute(`insert into payment (id, entrance_id, payment_type, payment_value) values(:id, :entrance_id, :payment_type, :payment_value)`, [req.query.id, data.entrance_id, req.query.payment_type, req.query.payment_value]);
-
+    console.log("Resultado do insert de payment: "+result)
   } catch (err) {
     //send error message
     return err.message;

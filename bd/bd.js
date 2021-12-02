@@ -278,7 +278,6 @@ exports.selectPaymentByEntranceId = async (req) => {
 }
 
 exports.insertPayment = async (req) => {
-  console.log("cheguei aqui")
   console.log(req.query.id + " " + req.query.entrance_id + " " + req.query.payment_type + " " + req.query.payment_value)
   var result;
   try {

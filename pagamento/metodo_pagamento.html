@@ -34,7 +34,7 @@
                         achou = true;
                         if (!i[3]) { //se exit_time é nulo, não saiu ainda
                             response = i[4] //pega valor a pagar da tabela entrance
-                            alert(i[4])
+                            //alert(i[4])
                         }
                     }
                 });
@@ -63,7 +63,8 @@
                 sURLVariables = sPageURL.split('='),
                 sParameterName,
                 i;
-                value_to_pay = await alreadyPaid(sURLVariables[1])//pega valor a pagar no momento com base na placa
+                var license = (sURLVariables[1]).split('?'[0])
+                value_to_pay = await alreadyPaid(license)//pega valor a pagar no momento com base na placa
                 
                 if (value_to_pay == 0) {
                     alert("Veiculo ja pagou")
@@ -88,9 +89,10 @@
                 sURLVariables = sPageURL.split('='),
                 sParameterName,
                 i;
-                //alert(sURLVariables[1]);  
             var entrance_id = sURLVariables[1];
-            window.location.href = type + '?id=' + entrance_id;
+            var value = document.getElementById("payment_value").innerHTML.substring(3);
+            //alert(value);
+            window.location.href = type + '?id=' + entrance_id + '?value=' + value;
         }
     </script>
     <header class="header_logo">

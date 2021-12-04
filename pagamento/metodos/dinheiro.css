@@ -27,6 +27,24 @@
     width: 50%;
     margin: auto;
 }
+.pay {
+    margin: auto;
+    color: rgb(223, 209, 209);
+    font-weight: bold;
+    font-style: normal;  
+    font-size: 40px;
+    text-shadow: 1px 2px 2px black;
+    text-align: center;
+    background-color: #389920;
+    padding: 25px 0 25px 0;
+    margin-top: 10%;
+    width: 25%;
+    border-radius: 10px;
+}
+.pay:hover{
+    background-color: #0b4e16;
+    cursor: pointer;
+}
 .cancel {
     margin: auto;
     color: rgb(223, 209, 209);
@@ -37,7 +55,7 @@
     text-align: center;
     background-color: #992120;
     padding: 25px 0 25px 0;
-    margin-top: 387px;
+    margin-top: 10%;
     width: 20%;
     border-radius: 10px;
 }

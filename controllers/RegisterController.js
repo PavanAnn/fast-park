@@ -18,9 +18,9 @@ module.exports = () => {
         else res.status(500).json(result);
     };
 
-    controller.updateRegister = (req, res) => { 
+    controller.updateRegister = async (req, res) => { 
         res.setHeader('Access-Control-Allow-Origin', request_origin); 
-        const result = res.status(200).json(bd.updateRegister(req)); 
+        const result = await bd.updateRegister(req); 
         if (result != "Response is undefined") res.status(200).json(result); 
         else res.status(500).json(result);
     };

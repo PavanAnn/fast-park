@@ -10,6 +10,7 @@
     
     <script >
         async function insertRegister(id, license, entrance_type, payment_value) {
+            alert(id + "  " + "  " + license + "  " + entrance_type + "  " + payment_value)
             var paramgroup = {
                     id: id,
                     license_plate: license,
@@ -32,11 +33,11 @@
             return res;
         }
 
-        async function updatePaymentValueRegister(license, entrance_time, payment_value) {
-            var res;
-            var formatted_date = entrance_time.getDay() + '/' + entrance_time.getMonth() + '/' + entrance_time.getFullYear().toString()[2] + entrance_time.getFullYear().toString()[3] + ' ' + entrance_time.getHours() + ':' + entrance_time.getMinutes() + ':' + entrance_time.getSeconds() + ',' + entrance_time.getMilliseconds();
-            console.log(formatted_date) 
-            await axios.patch('http://localhost:3000/register',  { params: {updateExit: false, license: license, entrance_time: entrance_time, payment_value: payment_value} })
+        async function updatePaymentValueRegister(license, payment_value) {
+            //var res; alert(entrance_time.getFullYear)
+            //var formatted_date = entrance_time.getDay + '/' + entrance_time.getMonth + '/' + (entrance_time.getFullYear).toString()[2] + entrance_time.getFullYear().toString()[3] + ' ' + entrance_time.getHours() + ':' + entrance_time.getMinutes() + ':' + entrance_time.getSeconds() + ',' + entrance_time.getMilliseconds();
+             
+            await axios.patch('http://localhost:3000/register', null,  { params: {updateExit: 0, license: license,  payment_value: payment_value} })
                 .then(response => { res = response.data;} )
                 .catch(error => console.log(error));
             return res;
@@ -44,7 +45,7 @@
 
         async function updateExitRegister(license, exit_time, entrance_time, payment_value) {
             var res;
-            await axios.patch('http://localhost:3000/register', null, { params: {updateExit: true, exit_time: exit_time, license: license, entrance_time: entrance_time, payment_value: payment_value} })
+            await axios.patch('http://localhost:3000/register', null, { params: {updateExit: 1, exit_time: exit_time, license: license } })
                 .then(response => { res = response.data;} )
                 .catch(error => console.log(error));
             return res;
@@ -59,9 +60,6 @@
         }
 
         async function getActiveRegisters() {
-            //var date_now = new Date();
-            //var formatted_date = date_now.getDay() + '/' + date_now.getMonth() + '/' + date_now.getFullYear().toString()[2] + date_now.getFullYear().toString()[3] + ' ' + date_now.getHours() + ':' + date_now.getMinutes() + ':' + date_now.getSeconds() + ',' + date_now.getMilliseconds();
-            //console.log(formatted_date) 
             var res;
             await axios.get('http://localhost:3000/registers', { params: {active: true} })
                 .then(response => { res = response.data;} )
@@ -86,7 +84,7 @@
                 var tempo_entrance_time = entrance_time.toString().split(' ')[4]
                 var date_then = new Date(); date_then.setTime(parseInt(tempo_entrance_time))
                 
-                alert(date_now.getHours() + " " + date_then.getHours())
+                //alert(date_now.getHours() + " " + date_then.getHours())
                 var tempo_total = (date_then.getTime() - date_now.getHours())
                 
                 var preco_total;
@@ -95,7 +93,7 @@
                     preco_total = taxa_tempo*tempo_total + taxa_vip;
                 else
                     preco_total = taxa_tempo*tempo_total;
-                alert(preco_total)
+                //alert(preco_total)
                //Formatar preço com padrões pr-br      
                 var preco_total_formatado = preco_total.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});    
                 return preco_total_formatado;
@@ -184,11 +182,9 @@
                     var numberRows = table.rows.length;
                     
                     for (var i = 1; i < numberRows; i++) {
-                        var value_to_pay =  calculaValorAPagar(0, table.rows[i].cells[2].innerHTML).toString().substring(2,7).replace(',', '.')
-                        console.log(value_to_pay)
+                        var value_to_pay =  calculaValorAPagar(0, table.rows[i].cells[2].innerHTML).toString().substring(3,6).split(',')[0]
                         //temos que atualizar o valor a ser pago na tabela entrance
-                        alert(value_to_pay)
-                        await updatePaymentValueRegister(table.rows[i].cells[0].innerHTML, null, table.rows[i].cells[2].innerHTML, value_to_pay )
+                        result = await updatePaymentValueRegister(table.rows[i].cells[1].innerHTML, value_to_pay )
                         table.rows[i].cells[4].innerHTML = "R$ " + value_to_pay;
                     }
 
@@ -265,7 +261,8 @@
                 var date_later = new Date();
                 date_later.setHours(date_now.getHours() + 2);
                 var id = generateId(numberRows);
-                var valor_a_pagar = calculaValorAPagar(0, date_later, sem_parar)
+                var valor_a_pagar = calculaValorAPagar(0, date_later, sem_parar).toString().substring(2,7).replace(',', '.')
+                //alert(valor_a_pagar.substring(0,2))
                 var new_row = [id, entrance_license, date_now.toString().split(' GMT')[0], "NULL", valor_a_pagar , tipo];
 
                 var count = 0;
@@ -275,8 +272,8 @@
                     cell.innerHTML = element;
                     count++;
                 });
-                alert(valor_a_pagar + " " + valor_a_pagar.toString().substring(3,5))
-                await insertRegister(id, entrance_license, tipo, valor_a_pagar.toString().substring(3,5));
+                await insertRegister(id, entrance_license, tipo, parseInt(valor_a_pagar.substring(0,2)));
+                await insertPayment(uuid(), id, null, 0);
             }
                 
         }
@@ -308,9 +305,9 @@
                 if (deleted == 0) {
                     alert("Nenhum registro foi encontrado com a placa fornecida")
                 } else {//se pagou tudo ha menos de 20min
-                    if ( value_to_pay != 0 )
+                    if ( value_to_pay.split('$')[1] != 0 )
                     {
-                        alert("Vai pagar")
+                        alert("Por favor, direcione-se ao pagamento")
                         //se ja passou 20min
                         //date_now = new Date();
                         //alert(ja_pagou.toString().substring(5,9))
@@ -318,8 +315,14 @@
                        // document.getElementById("my_table").deleteRow(i);
                         //await updateRegister(exit_license, new Date(), entrance_time);
                     }else {
-                        document.getElementById("my_table").deleteRow(i);
+                        document.getElementById("my_table").deleteRow(i-1);
                         date_now = new Date();
+                        month = date_now.getMonth() + 1;
+                        date_now = (date_now.toString().split(' GMT')[0]).split(' ');
+                        //var formatted_date = date_now.getDay + '/' + date_now.getMonth + '/' + (date_now.getFullYear).toString()[2] + date_now.getFullYear.toString()[3] +
+                        // ' ' + entrance_time.getHours + ':' + entrance_time.getMinutes + ':' + date_now.getSeconds + ',' + date_now.getMilliseconds;
+                       
+                        date_now = date_now[2] + '/' + month + '/' + date_now[3] + ' ' + date_now[4]
                         await updateExitRegister(exit_license, date_now, entrance_time); //update na entrance colocando o horario atual para a data de saida
                     }
                 }

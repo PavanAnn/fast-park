@@ -6,8 +6,9 @@
     <title>Pagamento com cartao de credito</title>
 </head>
 <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
     <script>
-        function redirect() {
+        function redirectBack() {
             var sPageURL = window.location.search.substring(1),
                 sURLVariables = sPageURL.split('='),
                 sParameterName,
@@ -16,6 +17,64 @@
             var entrance_id = sURLVariables[1];
             window.location.href='/pagamento/metodo_pagamento.html?id='+entrance_id;
         }
+
+        async function updatePaymentValueRegisterEntrance(license, payment_value) {
+            var res;
+            await axios.patch('http://localhost:3000/register', null, { params: {updateExit: false, license: license, payment_value: payment_value} })
+                .then(response => { res = response.data;} )
+                .catch(error => console.log(error));
+            return res;
+        }
+
+        async function getActiveRegisters() {
+            var res;
+            await axios.get('http://localhost:3000/registers', { params: {active: true} })
+                .then(response => { res = response.data;} )
+                .catch(error => console.log(error));
+            return res;
+        }
+
+        async function updatePaymentValueRegisterPayments(entrance_id, payment_value) {
+            var res;
+            await axios.patch('http://localhost:3000/payment', null, { params: {payment_value: payment_value, entrance_id: entrance_id, type: 'CC'} })
+                .then(response => { res = response.data;} )
+                .catch(error => console.log(error));
+            return res;
+        }
+      
+        async function updatePayment (license, value) {
+            var entrance_id;
+            var res = await getActiveRegisters();
+            res.forEach( (i) => {
+                    //alert(i[1]);
+                    if (i[1] == license)
+                        entrance_id = i[0]
+                });
+            if (entrance_id) {
+                //alert(entrance_id)
+                await updatePaymentValueRegisterPayments(entrance_id, value);
+            } else alert("Erro ao buscar registros")
+        }
+      
+        async function updateValueToPay() {
+            var sPageURL = window.location.search.substring(1),
+                        sURLVariables = sPageURL.split('='),
+                        sParameterName,
+                        i;
+            var entrance = (sURLVariables[1]).split('?')[0];
+            var entrance_time = null;//(sURLVariables[1]).split('=')[1];
+            var value = (sURLVariables[2]);
+            //alert(entrance + "   " + value)
+            await updatePaymentValueRegisterEntrance(entrance, 0);
+            await updatePayment(entrance, value);
+        }
+
+        async function redirect() {
+            await updateValueToPay();
+            //alert("valor a pagar " + value)
+            window.location.href='../pagamento_realizado.html';
+        }
+
     </script>
     <header class="header_logo">
       <h2 class="header_title">SHOPPING X</h1>
@@ -27,9 +86,9 @@
       </div>
       </header>
 
-      <div class="imgpos" onclick="window.location.href='../pagamento_realizado.html'">
+      <div class="imgpos" onclick="redirect()">
           <img src="../../images/image-asset.png">
       </div>
-      <div class="cancel" onclick="redirect()">Cancelar</div> 
+      <div class="cancel" onclick="redirectBack()">Cancelar</div> 
 </body>
 </html>

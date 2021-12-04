@@ -20,8 +20,16 @@ module.exports = () => {
     controller.createPayment = async(req, res) => { 
         res.setHeader('Access-Control-Allow-Origin', request_origin); 
         const result = await bd.insertPayment(req); 
-        res.status(200).json(result); 
-        console.log(result); };
+        if (result != "Response is undefined") res.status(200).json(result); 
+        else res.status(500).json(result);
+    };
+
+    controller.updatePayment = async (req, res) => { 
+        res.setHeader('Access-Control-Allow-Origin', request_origin); 
+        const result = await bd.updatePayment(req); 
+        if (result != "Response is undefined") res.status(200).json(result); 
+        else res.status(500).json(result);
+    };
         
     return controller;
 }

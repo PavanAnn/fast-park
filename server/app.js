@@ -24,6 +24,7 @@ module.exports = () => {
   app.route('/payments').get(controllerPayments.getPayments);
   app.route('/payment').get(controllerPayments.getPaymentByEntranceId);
   app.route('/payment').post(controllerPayments.createPayment);
+  app.route('/payment').patch(controllerPayments.updatePayment);
 
   return app;
 };

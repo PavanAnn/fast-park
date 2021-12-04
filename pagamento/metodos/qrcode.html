@@ -5,6 +5,66 @@
         <link rel='stylesheet' href="qrcode.css">
     </head>
     <body>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+        <script>    
+            async function updatePaymentValueRegisterEntrance(license, payment_value) {
+                var res;
+                await axios.patch('http://localhost:3000/register', null, { params: {updateExit: false, license: license, payment_value: payment_value} })
+                    .then(response => { res = response.data;} )
+                    .catch(error => console.log(error));
+                return res;
+            }
+    
+            async function getActiveRegisters() {
+                var res;
+                await axios.get('http://localhost:3000/registers', { params: {active: true} })
+                    .then(response => { res = response.data;} )
+                    .catch(error => console.log(error));
+                return res;
+            }
+    
+            async function updatePaymentValueRegisterPayments(entrance_id, payment_value) {
+                var res;
+                await axios.patch('http://localhost:3000/payment', null, { params: {payment_value: payment_value, entrance_id: entrance_id, type: 'PIX'} })
+                    .then(response => { res = response.data;} )
+                    .catch(error => console.log(error));
+                return res;
+            }
+          
+            async function updatePayment (license, value) {
+                var entrance_id;
+                var res = await getActiveRegisters();
+                res.forEach( (i) => {
+                        //alert(i[1]);
+                        if (i[1] == license)
+                            entrance_id = i[0]
+                    });
+                if (entrance_id) {
+                    //alert(entrance_id)
+                    await updatePaymentValueRegisterPayments(entrance_id, value);
+                } else alert("Erro ao buscar registros")
+            }
+          
+            async function updateValueToPay() {
+                var sPageURL = window.location.search.substring(1),
+                            sURLVariables = sPageURL.split('='),
+                            sParameterName,
+                            i;
+                var entrance = (sURLVariables[1]).split('?')[0];
+                var entrance_time = null;//(sURLVariables[1]).split('=')[1];
+                var value = (sURLVariables[2]);
+                //alert(entrance + "   " + value)
+                await updatePaymentValueRegisterEntrance(entrance, 0);
+                await updatePayment(entrance, value);
+            }
+    
+            async function redirect() {
+                await updateValueToPay();
+                //alert("valor a pagar " + value)
+                window.location.href='../pagamento_realizado.html';
+            }
+    
+        </script>
         <div id="img_input">
             <img id="nulogo" src="../../images/logo-nubank-roxo-1024.png">
             <div id="screen">

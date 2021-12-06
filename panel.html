@@ -9,6 +9,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
     
     <script >
+        async function getCountFromDatabase () {            
+            var res;
+            await axios.get('http://localhost:3000/registers/count', null, { params:  null })
+                .then(response => { res = response.data;} )
+                .catch(error => console.log(error));
+            return res;
+        }
+
         async function insertRegister(id, license, entrance_type, payment_value) {
             alert(id + "  " + "  " + license + "  " + entrance_type + "  " + payment_value)
             var paramgroup = {
@@ -145,6 +153,18 @@
 
         function random_obstructed_license () {
             return Math.floor(Math.random() * 5);
+        }
+        
+        async function getCount() {
+            var table = document.getElementsByName("spots");
+            table[0].innerHTML = 300;  
+            var result = await getCountFromDatabase();
+            if (result != "Response is undefined") {
+                result.forEach( (i) => {
+                    table[1].innerHTML = i-2+"/100";
+                    table[2].innerHTML = i+"/200";
+                });
+            }
         }
 
         async function populate_table()
@@ -408,6 +428,23 @@
         </div>
 
     </aside>
+    <table id="parking_spots">
+        <tr>
+            <th class="super-col">Total</th>
+            <th class="super-col">Preferenciais</th>
+            <th class="super-col">Comuns</th>
+        </tr>
+        <tr>
+            <td name="spots">1</td>
+            <td name="spots">2</td>
+            <td name="spots">3</td>
+        </tr>
+        <th>     
+            <td>
+                <button id="btn-calcular-spots" class="btn-table" onclick="getCount()">calcular</button>
+            </td>
+        </th>
+    </table>
 
     <table id="my_table" class="column">
         <tr>

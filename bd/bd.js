@@ -107,6 +107,42 @@ exports.createOperator = async (req) => {
 }
 
 //ENTRANCE REGISTERS
+exports.getCount = async(req) => {
+  var result;
+  try {
+    connection = await oracledb.getConnection({
+      user: "system",
+      password: password,
+      connectString: "localhost:1521/xe"
+    });
+
+    console.log('connected to database');
+    
+    result = await connection.execute(`SELECT count(*) FROM entrance where exit_time is null`);
+  } catch (err) {
+    //send error message
+    return err.message;
+  } finally {
+    if (connection) {
+      try {
+        // Always close connections
+        await connection.close();
+        console.log('close connection success');
+      } catch (err) {
+        console.error(err.message);
+      }
+    }
+    if (!result) return 'Response is undefined';
+    if (result.rows.length == 0) {
+      //query return zero employees
+      return 'query send no rows';
+    } else {
+      //send all employees
+      return result.rows;
+    }
+
+  }
+}
 
 exports.selectAllActiveRegisters = async(req) => {
   var result;

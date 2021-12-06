@@ -12,6 +12,14 @@ table{
     margin-left: 4%;
 }
 
+.super-col {
+    width: 33%;
+}
+
+.btn-table {
+    width: 100%;
+}
+
 thead{
     background-color: black;
     color: aliceblue;

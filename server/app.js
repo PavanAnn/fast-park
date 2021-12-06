@@ -20,6 +20,7 @@ module.exports = () => {
   app.route('/registers').get(controllerRegisters.getRegisters);
   app.route('/register').post(controllerRegisters.createRegister);
   app.route('/register').patch(controllerRegisters.updateRegister);
+  app.route('/registers/count').get(controllerRegisters.getCount);
   
   app.route('/payments').get(controllerPayments.getPayments);
   app.route('/payment').get(controllerPayments.getPaymentByEntranceId);

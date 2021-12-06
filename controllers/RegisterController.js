@@ -24,6 +24,13 @@ module.exports = () => {
         if (result != "Response is undefined") res.status(200).json(result); 
         else res.status(500).json(result);
     };
+
+    controller.getCount = async (req, res) => {
+        res.setHeader('Access-Control-Allow-Origin', request_origin); 
+        const result = await bd.getCount(req);
+        if (result != "Response is undefined") res.status(200).json(result); 
+        else res.status(500).json(result);
+    }
         
     return controller;
 }

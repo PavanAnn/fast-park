@@ -18,7 +18,7 @@
         }
 
         async function insertRegister(id, license, entrance_type, payment_value) {
-            alert(id + "  " + "  " + license + "  " + entrance_type + "  " + payment_value)
+            //alert(id + "  " + "  " + license + "  " + entrance_type + "  " + payment_value)
             var paramgroup = {
                     id: id,
                     license_plate: license,
@@ -52,8 +52,10 @@
         }
 
         async function updateExitRegister(license, exit_time, entrance_time, payment_value) {
+            var date = new Date(); //17/11/21 22:04:26,880000000
+            date = ('07/' + parseInt(parseInt(date.getMonth()) + 1) + '/' + date.getFullYear()  + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds())
             var res;
-            await axios.patch('http://localhost:3000/register', null, { params: {updateExit: 1, exit_time: exit_time, license: license } })
+            await axios.patch('http://localhost:3000/register', null, { params: {updateExit: 1, license: license, exit_time: date} })
                 .then(response => { res = response.data;} )
                 .catch(error => console.log(error));
             return res;
@@ -175,7 +177,6 @@
             
             if (result != "Response is undefined") {
                 result.forEach( (i) => {
-                    //alert(i[1]);
                     var table = document.getElementById("my_table");
                     var numberRows = table.rows.length;
 
@@ -183,7 +184,7 @@
                     payment_value = 0.00
                     var date = new Date(i[2]);
                     console.log(date.getDate());
-                    var new_row = [i[0], i[1], date.toString().split(' GMT')[0], i[3], "R$" + i[4] , i[5]]
+                    var new_row = [i[0], i[1], date.toString().split(' GMT')[0], i[3] + ' ', "R$" + i[4] , i[5]]
                     var count = 0;
                     new_row.forEach(element => {
                             var cell = row.insertCell(count);
@@ -205,7 +206,7 @@
                         var value_to_pay =  calculaValorAPagar(0, table.rows[i].cells[2].innerHTML).toString().substring(3,6).split(',')[0]
                         //temos que atualizar o valor a ser pago na tabela entrance
                         result = await updatePaymentValueRegister(table.rows[i].cells[1].innerHTML, value_to_pay )
-                        table.rows[i].cells[4].innerHTML = "R$ " + value_to_pay;
+                        table.rows[i].cells[4].innerHTML = "R$" + value_to_pay;
                     }
 
                 } catch (err) { console.log(err) }
@@ -313,7 +314,7 @@
                 
                 var value_to_pay = 0;
 
-                for (var i = 0; i < table.rows.length; i++) {
+                for (var i = 1; i < table.rows.length && deleted == 0; i++) {
                     if ( table.rows.item(i).cells.item(1).innerHTML == exit_license) {
                         deleted = 1;
                         entrance_time = table.rows.item(i).cells.item(2).innerHTML;
@@ -455,10 +456,6 @@
             <th>Total a pagar</th>
             <th>Tipo</th>
         </tr>
-        <!--<tbody id="my_table_tbody">
-            <tr></tr>
-
-        </tbody>-->
     </table>
 
     <button class="round_font" id="btnCalcularSalario" onclick="showPaymentValue()">Calcular pagamento</button>

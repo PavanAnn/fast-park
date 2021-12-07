@@ -21,7 +21,7 @@
 
         async function updatePaymentValueRegisterEntrance(license, payment_value) {
             var res;
-            await axios.patch('http://localhost:3000/register', null, { params: {updateExit: false, license: license, payment_value: payment_value, type: 'CD'} })
+            await axios.patch('http://localhost:3000/register', null, { params: {updateExit: 0, license: license, payment_value: payment_value, type: 'CD'} })
                 .then(response => { res = response.data;} )
                 .catch(error => console.log(error));
             return res;
@@ -65,7 +65,7 @@
             var entrance = (sURLVariables[1]).split('?')[0];
             var entrance_time = null;//(sURLVariables[1]).split('=')[1];
             var value = (sURLVariables[2]);
-            alert(entrance + "   " + value)
+            //alert(entrance + "   " + value)
             await updatePaymentValueRegisterEntrance(entrance, 0);
             await updatePayment(entrance, value);
         }

@@ -156,7 +156,8 @@ exports.selectAllActiveRegisters = async(req) => {
     console.log('connected to database');
     //console.log(req.query.active)
     //if (req.query.active == 'true') 
-    result = await connection.execute(`SELECT * FROM entrance where exit_time is null`);// where entrance_time>=:entrance_time`, [req.query.entrance_time]);
+    //result = await connection.execute(`SELECT * FROM entrance where exit_time is null`);
+    result = await connection.execute(`SELECT * FROM entrance where exit_time is null`);
     //else result = await connection.execute(`SELECT * FROM entrance`);
 
   } catch (err) {
@@ -220,13 +221,15 @@ exports.updateRegister = async (req) => {
       user: "system",
       password: password,
       connectString: "localhost:1521/xe"
-    });console.log(req.query.license + " " + req.query.payment_value)
-    if (req.query.updateExit == 0) {
+    });
+     //console.log(req.query.payment_value + " " + req.query.exit_time + " " + req.query.license)
+     if (req.query.updateExit === 0) {
       result = await connection.execute(`update entrance set payment_value=:payment_value where license_plate=:license and exit_time is null`, [req.query.payment_value, req.query.license], { autoCommit: true}); 
     } else { 
       //console.log(req.query.exit_time)
       result = await connection.execute(`update entrance set exit_time=:exit_time where license_plate=:license`, [req.query.exit_time, req.query.license], { autoCommit: true});
    }
+    
   } catch (err) {
     //send error message
     return err.message;
@@ -329,8 +332,8 @@ exports.insertPayment = async (req) => {
       password: password,
       connectString: "localhost:1521/xe"
     });
-    // run query to get employee with employee_id
-    result = await connection.execute(`insert into payment (id, entrance_id, payment_type, payment_value) values(:id, :entrance_id, :payment_type, :payment_value)`, [req.query.id, data.entrance_id, req.query.payment_type, req.query.payment_value], { autoCommit: true});
+    console.log("Insert Pagamento")
+    result = await connection.execute(`insert into payment (id, entrance_id, payment_type, payment_value) values(:id, :entrance_id, :payment_type, :payment_value)`, [req.query.id, req.query.entrance_id, null, req.query.payment_value], { autoCommit: true});
     console.log("Resultado do insert de payment: "+result)
   } catch (err) {
     //send error message

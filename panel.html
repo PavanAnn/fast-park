@@ -51,11 +51,13 @@
             return res;
         }
 
-        async function updateExitRegister(license, exit_time, entrance_time, payment_value) {
-            var date = new Date(); //17/11/21 22:04:26,880000000
+        async function updateExitRegister(license, payment_value, entrance_time) { 
+            var date = new Date();
             date = ('07/' + parseInt(parseInt(date.getMonth()) + 1) + '/' + date.getFullYear()  + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds())
+            //alert(date)
             var res;
-            await axios.patch('http://localhost:3000/register', null, { params: {updateExit: 1, license: license, exit_time: date} })
+            var value = payment_value.toString().split('$')[1]
+            await axios.patch('http://localhost:3000/register', null, { params: {updateExit: 1, license: license, exit_time: date, payment_value: value} })
                 .then(response => { res = response.data;} )
                 .catch(error => console.log(error));
             return res;
@@ -85,31 +87,36 @@
             return res;
         }
 
-        function calculaValorAPagar (current_value, entrance_time, vip) {
-            var taxa_vip = 4;
-            var taxa_tempo = 3;
-            var intervalo = 20;
-            try { 
-                var date_now = new Date();
-                var tempo_entrance_time = entrance_time.toString().split(' ')[4]
-                var date_then = new Date(); date_then.setTime(parseInt(tempo_entrance_time))
-                
-                //alert(date_now.getHours() + " " + date_then.getHours())
-                var tempo_total = (date_then.getTime() - date_now.getHours())
-                
-                var preco_total;
+        function calculaValorAPagar (current_value, entrance_time, vip, sem_parar) {
+            //alert(sem_parar)
+            if (sem_parar == 'Sim') {
+                return "R$ 0";
+            } else {
+                var taxa_vip = 4;
+                var taxa_tempo = 3;
+                var intervalo = 20;
+                try { 
+                    var date_now = new Date();
+                    var tempo_entrance_time = entrance_time.toString().split(' ')[4]
+                    var date_then = new Date(); date_then.setTime(parseInt(tempo_entrance_time))
+                    
+                    //alert(date_now.getHours() + " " + date_then.getHours())
+                    var tempo_total = (date_then.getTime() - date_now.getHours())
+                    
+                    var preco_total;
 
-                if (vip != 'Não')
-                    preco_total = taxa_tempo*tempo_total + taxa_vip;
-                else
-                    preco_total = taxa_tempo*tempo_total;
-                //alert(preco_total)
-               //Formatar preço com padrões pr-br      
-                var preco_total_formatado = preco_total.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});    
-                return preco_total_formatado;
-            }
-            catch {
-                console.log(console.error());
+                    if (vip != 'Não')
+                        preco_total = taxa_tempo*tempo_total + taxa_vip;
+                    else
+                        preco_total = taxa_tempo*tempo_total;
+                    //alert(preco_total)
+                //Formatar preço com padrões pr-br      
+                    var preco_total_formatado = preco_total.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});    
+                    return preco_total_formatado;
+                }
+                catch {
+                    console.log(console.error());
+                }
             }
         }
 
@@ -163,8 +170,11 @@
             var result = await getCountFromDatabase();
             if (result != "Response is undefined") {
                 result.forEach( (i) => {
-                    table[1].innerHTML = i-2+"/100";
-                    table[2].innerHTML = i+"/200";
+                    cut = 2;
+                    comum = i - cut;
+                    pref = cut;
+                    table[1].innerHTML = pref+"/100";
+                    table[2].innerHTML = comum+"/200";
                 });
             }
         }
@@ -184,7 +194,7 @@
                     payment_value = 0.00
                     var date = new Date(i[2]);
                     console.log(date.getDate());
-                    var new_row = [i[0], i[1], date.toString().split(' GMT')[0], i[3] + ' ', "R$" + i[4] , i[5]]
+                    var new_row = [i[0], i[1], date.toString().split(' GMT')[0], i[3] + ' ', "R$" + i[4] , i[5], "Não"]
                     var count = 0;
                     new_row.forEach(element => {
                             var cell = row.insertCell(count);
@@ -203,7 +213,10 @@
                     var numberRows = table.rows.length;
                     
                     for (var i = 1; i < numberRows; i++) {
-                        var value_to_pay =  calculaValorAPagar(0, table.rows[i].cells[2].innerHTML).toString().substring(3,6).split(',')[0]
+                        var sem_parar = table.rows[i].cells[5].innerHTML;
+                        if (sem_parar == 'CCSP') sem_parar = 'Sim'
+                        else sem_parar = 'Não'
+                        var value_to_pay =  calculaValorAPagar(0, table.rows[i].cells[2].innerHTML, table.rows[i].cells[6].innerHTML, sem_parar).toString().substring(3,6).split(',')[0]
                         //temos que atualizar o valor a ser pago na tabela entrance
                         result = await updatePaymentValueRegister(table.rows[i].cells[1].innerHTML, value_to_pay )
                         table.rows[i].cells[4].innerHTML = "R$" + value_to_pay;
@@ -230,6 +243,12 @@
             else if (inputs_sem_parar[1].checked ) { sem_parar = inputs_sem_parar[1].value; }
             else { alert ("Selecione uma opção de sem-parar"); return  null}
 
+            var  vip = 0;
+            var inputs_vip = document.getElementsByName("vip-input");
+            if (inputs_vip[0].checked ) { vip = inputs_vip[0].value; }
+            else if (inputs_vip[1].checked ) { vip = inputs_vip[1].value; }
+            else { alert ("Selecione uma opção de VIP"); return  null}
+
             var tipo = 0;
             var inputs_type = document.getElementsByName("type-input");
             if (inputs_type[0].checked ) { tipo = inputs_type[0].value; }
@@ -247,7 +266,7 @@
                 tipo = 'MSSP'
             }
 
-            return {"entrance_license": entrance_license, "sem_parar": sem_parar, "tipo": tipo};
+            return {"entrance_license": entrance_license, "sem_parar": sem_parar, "tipo": tipo, "vip": vip};
         }
 
         function generateId (numberRows) {
@@ -270,6 +289,7 @@
             else entrance_license = document.getElementById("entrance_license").value.toUpperCase();
             var sem_parar = response.sem_parar;
             var tipo = response.tipo;
+            var vip = response.vip;
 
             if (random_obstructed_license() == 1) {
                 alert("Ooops:( Placa obstruída! Tente entrar novamente ou acione ajuda.");
@@ -282,9 +302,9 @@
                 var date_later = new Date();
                 date_later.setHours(date_now.getHours() + 2);
                 var id = generateId(numberRows);
-                var valor_a_pagar = calculaValorAPagar(0, date_later, sem_parar).toString().substring(2,7).replace(',', '.')
+                var valor_a_pagar = calculaValorAPagar(0, date_later, vip, sem_parar).toString().substring(2,7).replace(',', '.')
                 //alert(valor_a_pagar.substring(0,2))
-                var new_row = [id, entrance_license, date_now.toString().split(' GMT')[0], "NULL", valor_a_pagar , tipo];
+                var new_row = [id, entrance_license, date_now.toString().split(' GMT')[0], "null", valor_a_pagar , tipo, vip];
 
                 var count = 0;
 
@@ -293,6 +313,9 @@
                     cell.innerHTML = element;
                     count++;
                 });
+                //date_now = new Date();
+                //date_now = date_now[2] + '/' + month + '/' + date_now[3] + ' ' + date_now[4]
+                                
                 await insertRegister(id, entrance_license, tipo, parseInt(valor_a_pagar.substring(0,2)));
                 await insertPayment(uuid(), id, null, 0);
             }
@@ -304,7 +327,7 @@
             if (exit_license == "")
                 alert("Por favor, digite um valor válido para a placa do veículo.")
             else{
-                alert("Veículo com placa '" + exit_license + "' saindo...")
+                //alert("Veículo com placa '" + exit_license + "' saindo...")
                 var table = document.getElementById("my_table");
                 var numberRows = table.rows.length - 1;
                 var count = 1;
@@ -319,32 +342,51 @@
                         deleted = 1;
                         entrance_time = table.rows.item(i).cells.item(2).innerHTML;
                         value_to_pay = table.rows.item(i).cells.item(4).innerHTML;
+                        entrance_id =  table.rows.item(i).cells.item(0).innerHTML;
                         linha = i;
                     }
                 }
 
                 if (deleted == 0) {
                     alert("Nenhum registro foi encontrado com a placa fornecida")
-                } else {//se pagou tudo ha menos de 20min
+                } else {
                     if ( value_to_pay.split('$')[1] != 0 )
                     {
                         alert("Por favor, direcione-se ao pagamento")
-                        //se ja passou 20min
-                        //date_now = new Date();
-                        //alert(ja_pagou.toString().substring(5,9))
-                       // date_then = new Date().setTime(ja_pagou.toString().substring(5,9))
+                        
                        // document.getElementById("my_table").deleteRow(i);
                         //await updateRegister(exit_license, new Date(), entrance_time);
                     }else {
                         document.getElementById("my_table").deleteRow(i-1);
-                        date_now = new Date();
-                        month = date_now.getMonth() + 1;
-                        date_now = (date_now.toString().split(' GMT')[0]).split(' ');
                         //var formatted_date = date_now.getDay + '/' + date_now.getMonth + '/' + (date_now.getFullYear).toString()[2] + date_now.getFullYear.toString()[3] +
                         // ' ' + entrance_time.getHours + ':' + entrance_time.getMinutes + ':' + date_now.getSeconds + ',' + date_now.getMilliseconds;
+
+                        //se ja passou 20min
+                        //alert(entrance_id)
+                        //payment_info = await getTotalAPagar(entrance_id);
+                        //console.log(payment_info)
+                        //if (payment_info != "Response is undefined") {
+                            date_now = new Date(); 
+                        //    hours_then = payment_info[0][2].toString().substring(5,9) //get payment time
+                        //    minutes_then  = payment_info.toString().substring(5,9)
+                        //    delay_sum = 0;
+                        //    if ((date_now.getHours()) > parseInt(hours_then))
+                        //        delay_sum = 60*((date_now.getHours())-parseInt(hours_then))
+                        //    if (date_now.getMinutes() > minutes_then)
+                        //        delay_sum = 60*((date_now.getMinutes())-parseInt(hours_then))
+                        //    if (delay_sum > 20)
+                        //        alert ("Ops! O veículo de placa " + exit_license + " estourou o limite de tempo de saída após o  pagamento (20min). Por favor, dirija-se ao pagamento.")
+                        //    else {
+                                //date_now = date_now[2] + '/' + month + '/' + date_now[3] + ' ' + date_now[4]
+                                //alert(date_now)
+                                await updateExitRegister(exit_license, value_to_pay, entrance_time); //update na entrance colocando o horario atual para a data de saida
+                        
+                        //    }
+                        //} else {
+                        //    date_now = date_now[2] + '/' + month + '/' + date_now[3] + ' ' + date_now[4]
+                        //    await updateExitRegister(exit_license, date_now, entrance_time); //update na entrance colocando o horario atual para a data de saida
                        
-                        date_now = date_now[2] + '/' + month + '/' + date_now[3] + ' ' + date_now[4]
-                        await updateExitRegister(exit_license, date_now, entrance_time); //update na entrance colocando o horario atual para a data de saida
+                        //}
                     }
                 }
 
@@ -395,6 +437,12 @@
         <div>
             <input class="checkboxes" type="radio" name="type-input" value="Carro" checked>Carro
             <input class="checkboxes" type="radio" name="type-input" value="Moto">Moto
+        </div>
+
+        <div>
+            <h3>VIP?</h3>
+            <input class="checkboxes" type="radio" name="vip-input" value="Sim">Sim
+            <input class="checkboxes" type="radio" name="vip-input" value="Não" checked>Não
         </div>
 
 
@@ -455,6 +503,7 @@
             <th>Saída</th>
             <th>Total a pagar</th>
             <th>Tipo</th>
+            <th>VIP</th>
         </tr>
     </table>
 

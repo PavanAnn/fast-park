@@ -63,7 +63,9 @@
                 sURLVariables = sPageURL.split('='),
                 sParameterName,
                 i;
-                var license = (sURLVariables[1]).split('?'[0])
+                alert(sURLVariables[1])
+                var license = (sURLVariables[1]).split('?')[0]
+                //alert(license)
                 value_to_pay = await alreadyPaid(license)//pega valor a pagar no momento com base na placa
                 
                 if (value_to_pay == 0) {
